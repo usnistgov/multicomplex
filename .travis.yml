@@ -1,0 +1,29 @@
+language: cpp
+dist: bionic # 18.04
+compiler:
+  - clang
+  - gcc
+
+addons:
+  apt:
+    packages:
+    - g++
+    - clang
+    - python3-pip 
+
+# command to run tests
+script: 
+  - git submodule update --init --recommend-shallow
+  - pip3 install setuptools
+  - pip3 -vvv install .
+  - mkdir cmake-build
+  - cd cmake-build
+  - cmake ../pymcx -DCMAKE_BUILD_TYPE=Release
+  - cmake --build .
+
+notifications:
+  email:
+    recipients:
+      - ian.bell@nist.gov
+    on_success: never # default: change
+    on_failure: always # default: always
