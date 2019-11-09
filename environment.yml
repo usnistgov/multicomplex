@@ -7,5 +7,7 @@ dependencies:
   - numpy
   - jupyter
   - notebook
+  - sympy
+  - pip
   - pip:
     - "git+git://github.com/ianhbell/mcx.git"
