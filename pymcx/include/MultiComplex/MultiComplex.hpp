@@ -45,6 +45,9 @@ struct MultiComplex
     int m_d = 0;
     std::valarray<T> coef;
 
+    /// Default constructor
+    MultiComplex() : m_d(0) { coef = {}; };
+
     /// This is a "normal" real number (re+i*0), stored as a complex number
     MultiComplex(const T re) : m_d(1) { coef = { re, 0 }; };
 
@@ -471,11 +474,12 @@ MultiComplex<TN> log(const MultiComplex<TN>& z) {
  @param f The function to be called. Takes a MultiComplex, returns a MultiComplex.  Consider writing a lambda function that does the calculation
  @param x The real value at which the multicomplex should be instantiated
  @param numderiv The maximum number of derivatives to take.  The larger this number the more computational effort required
+ @parma and_val Also return the function value in slot 0
  @return out The vector of numerical derivatives that were obtained.  The first entry is the first derivative, the second is the second derivative, and so on
  */
 template<typename TN>
 std::vector<TN> diff_mcx1(const std::function<MultiComplex<TN>(const MultiComplex<TN>&)>& f,
-    TN x, int numderiv)
+    TN x, int numderiv, bool and_val = false)
 {
     // The tiny step
     TN DELTA = increment(numderiv);
@@ -496,6 +500,9 @@ std::vector<TN> diff_mcx1(const std::function<MultiComplex<TN>(const MultiComple
     //for(auto i:o.get_coef()){ std::cout << i << std::endl;}
     // Store all the derivatives that were calculated
     std::vector<TN> ders;
+    if (and_val) {
+        ders.push_back(o[0]);
+    }
     for (auto L = 1; L <= numderiv; ++L) {
         // The calculated value is sitting in the 2^L-1 index,
         // and then need to divide by DELTA^L
