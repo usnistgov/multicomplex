@@ -511,6 +511,42 @@ std::vector<TN> diff_mcx1(const std::function<MultiComplex<TN>(const MultiComple
     return ders;
 }
 
+template<typename TN>
+std::tuple<std::vector<TN>, std::vector<TN>> diff_mcx1(const std::function<std::tuple<MultiComplex<TN>,MultiComplex<TN>>(const MultiComplex<TN>&)>& f,
+    TN x, int numderiv, bool and_val = false)
+{
+    // The tiny step
+    TN DELTA = increment(numderiv);
+    // Coeffs of the multicomplex number, filled by default
+    // with zeros.  The array of coefficients is of length 2^(numderiv)
+    std::valarray<TN> c(0.0, exp2i(numderiv));
+    // The real component as passed to function
+    c[0] = x;
+    // The very, very small offset number goes in all the indices
+    // 2^k for 0 <= k < numderiv. For a "normal" complex number,
+    // this would be the second entry (index=1)
+    for (auto k = 0; k < numderiv; ++k) {
+        c[exp2i(k)] = DELTA;
+    }
+    // Call the function with our multicomplex number
+    // (implicit instantiation of MC argument to f)
+    auto [o,e] = f(c);
+    //for(auto i:o.get_coef()){ std::cout << i << std::endl;}
+    // Store all the derivatives that were calculated
+    std::vector<TN> ders,errs;
+    if (and_val) {
+        ders.push_back(o[0]);
+        errs.push_back(e[0]);
+    }
+    for (auto L = 1; L <= numderiv; ++L) {
+        // The calculated value is sitting in the 2^L-1 index,
+        // and then need to divide by DELTA^L
+        ders.push_back(o[int(exp2i(L) - 1)] / pow(DELTA, L));
+        errs.push_back(e[int(exp2i(L) - 1)] / pow(DELTA, L));
+    }
+    return std::make_tuple(ders,errs);
+}
+
 /**
  The specified derivatives of a function that takes multiple variables
 
