@@ -11,7 +11,12 @@ namespace py = pybind11;
 void init_MultiComplex(py::module &m){
     typedef MultiComplex<double> MCD;
 
-    m.def("diff_mcx1", &diff_mcx1<double>);
+    using TN = double;
+    m.def("diff_mcx1", py::overload_cast<const std::function<MultiComplex<TN>(const MultiComplex<TN>&)>&, TN, int, bool>(&diff_mcx1<TN>), 
+        py::arg("f"), py::arg("x"), py::arg("numderiv"), py::arg("and_val") = false);
+    using tuplefunction = std::function<std::tuple<MultiComplex<TN>, MultiComplex<TN>>(const MultiComplex<TN>&)>;
+    m.def("diff_mcx1", py::overload_cast<const tuplefunction&, TN, int, bool>(&diff_mcx1<TN>), 
+        py::arg("f"), py::arg("x"), py::arg("numderiv"), py::arg("and_val") = false);
     m.def("diff_mcxN", &diff_mcxN<double>);
 
     py::class_<MCD>(m, "MultiComplex")

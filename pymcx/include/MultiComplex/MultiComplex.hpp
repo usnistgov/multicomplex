@@ -521,7 +521,9 @@ std::vector<TN> diff_mcx1(const std::function<MultiComplex<TN>(const MultiComple
  @return out The vector of numerical derivatives that were obtained.  The first entry is the first derivative, the second is the second derivative, and so on
  */
 template<typename TN>
-std::tuple<std::vector<TN>, std::vector<TN>> diff_mcx1(const std::function<std::tuple<MultiComplex<TN>,MultiComplex<TN>>(const MultiComplex<TN>&)>& f,
+std::tuple<std::vector<TN>, std::vector<TN>> diff_mcx1(
+    const std::function<std::tuple<MultiComplex<TN>,
+    MultiComplex<TN>>(const MultiComplex<TN>&)>& f,
     TN x, int numderiv, bool and_val = false)
 {
     // The tiny step
