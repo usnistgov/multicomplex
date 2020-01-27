@@ -522,8 +522,7 @@ std::vector<TN> diff_mcx1(const std::function<MultiComplex<TN>(const MultiComple
  */
 template<typename TN>
 std::tuple<std::vector<TN>, std::vector<TN>> diff_mcx1(
-    const std::function<std::tuple<MultiComplex<TN>,
-    MultiComplex<TN>>(const MultiComplex<TN>&)>& f,
+    const std::function<std::tuple<MultiComplex<TN>, MultiComplex<TN>>(const MultiComplex<TN>&)>& f,
     TN x, int numderiv, bool and_val = false)
 {
     // The tiny step
