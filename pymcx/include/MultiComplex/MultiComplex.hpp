@@ -511,6 +511,15 @@ std::vector<TN> diff_mcx1(const std::function<MultiComplex<TN>(const MultiComple
     return ders;
 }
 
+/**
+ The derivatives of order 1 to n (inclusive) of a function that takes a single variable
+
+ @param f The function to be called. Takes a MultiComplex, returns a tuple of MultiComplex values.  Consider writing a lambda function that does the calculation
+ @param x The real value at which the multicomplex should be instantiated
+ @param numderiv The maximum number of derivatives to take.  The larger this number the more computational effort required
+ @parma and_val Also return the function value in slot 0
+ @return out The vector of numerical derivatives that were obtained.  The first entry is the first derivative, the second is the second derivative, and so on
+ */
 template<typename TN>
 std::tuple<std::vector<TN>, std::vector<TN>> diff_mcx1(const std::function<std::tuple<MultiComplex<TN>,MultiComplex<TN>>(const MultiComplex<TN>&)>& f,
     TN x, int numderiv, bool and_val = false)

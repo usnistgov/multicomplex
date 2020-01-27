@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.0)
 project(MULTICOMPLEX)
 
-# We heavily use modern C++ features, C++14+ support is required
-set (CMAKE_CXX_STANDARD 14)
+# We heavily use modern C++ features, C++17+ support is required
+set (CMAKE_CXX_STANDARD 17)
 
 # Add the pybind11 stuff
 if (NOT CEGO_NO_PYTHON)

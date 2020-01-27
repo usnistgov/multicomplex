@@ -133,6 +133,28 @@ TEST_CASE("x^4 derivs; 4 double", "[1D]") {
     REQUIRE(abs_errs < 1e-12);
 }
 
+TEST_CASE("x^4 derivs, returned as tuple", "[1D]") {
+    using fcn_t = std::function<std::tuple<MultiComplex<double>, MultiComplex<double>>(const MultiComplex<double>&)>;
+    fcn_t ff = [](const MultiComplex<double>& z) {
+        return std::make_tuple(z.pow(4.0), z.pow(4.0));
+    };
+    double x = 0.1234;
+    int numderiv = 6;
+    auto [fo, err] = diff_mcx1(ff, x, numderiv); // A dummy error output for testing
+    std::vector<double> exacts(numderiv);
+    exacts[0] = 4.0 * std::pow(x, 3.0);
+    exacts[1] = 12.0 * std::pow(x, 2.0);
+    exacts[2] = 24.0 * std::pow(x, 1.0);
+    exacts[3] = 24.0;
+    exacts[4] = 0;
+    exacts[5] = 0;
+    double abs_errs = 0;
+    for (auto i = 0; i < numderiv; ++i) {
+        abs_errs += std::abs((fo[i] - exacts[i]));
+    }
+    REQUIRE(abs_errs < 1e-12);
+}
+
 TEST_CASE("Higher derivatives","[ND]") {
     auto func = [](const std::vector<MultiComplex<double>>& zs) {
         return cos(zs[0]) * sin(zs[1]) * exp(zs[2]);
