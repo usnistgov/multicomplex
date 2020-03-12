@@ -38,9 +38,15 @@ void init_MultiComplex(py::module &m){
         .def(double() * py::self)
         // Unary operators
         .def(-py::self)
+        // Comparison operators
+        .def("__lt__", [](const MCD& a, const double b) { return a.real() < b; }, py::is_operator())
+        .def("__lt__", [](const MCD& a, const MCD& b) { return a.real() < b.real(); }, py::is_operator())
+        .def("__gt__", [](const MCD& a, const double b) { return a.real() > b; }, py::is_operator())
+        .def("__gt__", [](const MCD& a, const MCD& b) { return a.real() > b.real(); }, py::is_operator())
 
         .def("get_coef", &MCD::get_coef)
         .def("dim", &MCD::dim)
+        .def("real", &MCD::real)
         .def("complex", &MCD::complex)
         .def("__pow__", [](MCD& mc, int exponent) { return mc.pow(exponent); })
         .def("__pow__", [](MCD& mc, double exponent) { return mc.pow(exponent); })

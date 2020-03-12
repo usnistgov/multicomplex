@@ -29,36 +29,14 @@ TEST_CASE("log2i", "[log2i]") {
     CHECK_THROWS(log2i(7));
 }
 
-TEST_CASE("First 10 Derivatives of x*sin(x)", "[1D]") {
+TEST_CASE("real(MCX)", "[1D]") {
+    MultiComplex<double> z{ {3.0, 1e-100} };
+    REQUIRE(z.real() == 3.0);
+}
 
-    typedef std::function<MultiComplex<double>(const MultiComplex<double>&)> fcn_t;
-    // The function itself that we are taking derivatives of
-    fcn_t f = [](const MultiComplex<double>& z) {
-        return z * sin(z);
-    };
-    // The n-th exact partial derivative
-    auto dnfdxn = [](double x, int n) {
-        std::valarray<double> fa = { 1,-1,-1,1 }, fb = { 1,1,-1,-1 };
-        double a = fa[(n - 1) % 4], b = fb[(n - 1) % 4];
-        if (n % 2 == 0) {
-            return a*x*sin(x) + b*n*cos(x);
-        }
-        else {
-            return a*x*cos(x) + b*n*sin(x);
-        }
-    };
-    // The value where the derivative is taken
-    double x = 0.1234;
-    std::vector<double> exacts;
-    for (auto i = 1; i <= 10; ++i) {
-        exacts.push_back(dnfdxn(x, i));
-    }
-    auto mcs = diff_mcx1(f, x, 10);
-    double abs_errs = 0;
-    for (auto i = 0; i < 10; ++i) {
-        abs_errs += std::abs(mcs[i] - exacts[i]);
-    }
-    REQUIRE(abs_errs < 1e-14);
+TEST_CASE("MCX < double", "[1D]") {
+    MultiComplex<double> z{ {3.0, 1e-100} };
+    REQUIRE(z < 4.0);
 }
 
 TEST_CASE("exp(-big)", "[1D]") {

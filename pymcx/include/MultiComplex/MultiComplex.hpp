@@ -76,6 +76,11 @@ struct MultiComplex
     /// The dimension of the multicomplex number
     int dim() const { return m_d; }
 
+    /// The "most real" component; infinity if not initialized yet
+    T real() const {
+        return (m_d > 0) ? coef[0] : std::numeric_limits<double>::infinity();
+    }
+
     std::complex<T> complex() const {
         return { coef[0], coef[1] };
     }
@@ -400,6 +405,10 @@ struct MultiComplex
     void set_coef(int ind, T val) {
         coef[ind] = val;
     }
+
+    friend bool operator< (const MultiComplex<T>& lhs, const MultiComplex<T>& rhs) { 
+        return lhs.real() < rhs.real(); 
+    };
 };
 
 /// Helper function that allows for pre-addition by calling the postfix function
