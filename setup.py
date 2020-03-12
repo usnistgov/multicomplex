@@ -62,7 +62,7 @@ os.chdir(here+'/pymcx')
 
 setup(
     name='pymcx',
-    version='0.9.0',
+    version='0.10.0',
     author='Ian Bell, Ulrich Deiters, Bradley Alpert',
     author_email='ian.bell@nist.gov',
     description='Multicomplex algebra in C++ with wrapper in python',
