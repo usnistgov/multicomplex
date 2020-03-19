@@ -30,12 +30,12 @@ TEST_CASE("log2i", "[log2i]") {
 }
 
 TEST_CASE("real(MCX)", "[1D]") {
-    MultiComplex<double> z{ {3.0, 1e-100} };
+    MultiComplex<double> z{ std::complex<double>{3.0, 1e-100} };
     REQUIRE(z.real() == 3.0);
 }
 
 TEST_CASE("MCX < double", "[1D]") {
-    MultiComplex<double> z{ {3.0, 1e-100} };
+    MultiComplex<double> z{ std::complex<double>{3.0, 1e-100} };
     REQUIRE(z < 4.0);
 }
 
