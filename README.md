@@ -16,7 +16,7 @@ import numpy
 derivs = pymcx.diff_mcx1(lambda x: np.sin(x), 0.1234, 10)
 ```
 
-WARNING: Not all functions are implemented, due to the complications of multicomplex algebra.  The following functinons are implemented:
+WARNING: Not all functions are implemented, due to the complications of multicomplex algebra.  The following functions are implemented:
 
 * Element-wise operations: *,+,/,-
 * Trig functions: cos, sin, cosh, sinh
