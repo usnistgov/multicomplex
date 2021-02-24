@@ -12,7 +12,7 @@ Here is how to calculate the first 10 derivatives of sin(x) to numerical precisi
 
 ``` Python
 import pymcx
-import numpy
+import numpy as np
 derivs = pymcx.diff_mcx1(lambda x: np.sin(x), 0.1234, 10)
 ```
 
