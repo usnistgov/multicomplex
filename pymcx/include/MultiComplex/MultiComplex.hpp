@@ -477,6 +477,16 @@ MultiComplex<TN> log(const MultiComplex<TN>& z) {
     return y;
 }
 
+template<typename TN>
+MultiComplex<TN> pow(const MultiComplex<TN>& z, double e) {
+    if (z.dim() == 1) {
+        return std::pow(z.complex(), e);
+    }
+    else {
+        return z.pow(e);
+    }
+}
+
 /**
  The derivatives of order 1 to n (inclusive) of a function that takes a single variable
 
