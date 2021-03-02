@@ -338,12 +338,30 @@ struct MultiComplex
         }
     }
 
+    /** Raise to an exponent
+    * \note: A nasty problem occurs when real-most coefficient is negative and imaginary part is close to zero. This takes us 
+    * close to the branch-cut in the complex plane, so it is necessary to factor out the real-most coefficient, and do the 
+    * exponentiation of each part separately and join after
+    */
     MultiComplex pow(double exponent) const {
         if (dim()==1){
-            return std::pow(complex(), exponent);
+            auto c = complex();
+            if (c.real() < 0){
+                return std::pow(c.real(), exponent)*std::pow(c/c.real(), exponent);
+            }
+            else {
+                return std::pow(c, exponent);
+            }
         }
         else{
-            return (exponent*log(*this)).exp();
+            // a^b = exp(ln(a^b)) = exp(b*ln(a))
+            auto c0 = coef[0];
+            if (c0 >= 0){
+                return (exponent*log(*this)).exp();
+            }
+            else {
+                return std::pow(c0, exponent) * (exponent * log((*this) / c0)).exp();
+            }
         }
     }
 
@@ -479,12 +497,7 @@ MultiComplex<TN> log(const MultiComplex<TN>& z) {
 
 template<typename TN>
 MultiComplex<TN> pow(const MultiComplex<TN>& z, double e) {
-    if (z.dim() == 1) {
-        return std::pow(z.complex(), e);
-    }
-    else {
-        return z.pow(e);
-    }
+    return z.pow(e);
 }
 
 /**
