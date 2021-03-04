@@ -339,15 +339,21 @@ struct MultiComplex
     }
 
     /** Raise to an exponent
-    * \note: A nasty problem occurs when real-most coefficient is negative and imaginary part is close to zero. This takes us 
-    * close to the branch-cut in the complex plane, so it is necessary to factor out the real-most coefficient, and do the 
-    * exponentiation of each part separately and join after
+    * If real-most part of number is negative, power must be an integer
     */
     MultiComplex pow(double exponent) const {
+        int integer_exponent = static_cast<int>(exponent);
         if (dim()==1){
             auto c = complex();
             if (c.real() < 0){
-                return std::pow(c.real(), exponent)*std::pow(c/c.real(), exponent);
+                // Special case 'negative' arguments
+                if (exponent == integer_exponent){
+                    // exponent (as double) is exact integer representation
+                    return std::pow(c, integer_exponent);
+                }
+                else {
+                    throw std::range_error("Cannot use 'negative' complex numbers with non-integer exponents");
+                }
             }
             else {
                 return std::pow(c, exponent);
@@ -360,7 +366,14 @@ struct MultiComplex
                 return (exponent*log(*this)).exp();
             }
             else {
-                return std::pow(c0, exponent) * (exponent * log((*this) / c0)).exp();
+                // Special case 'negative' arguments
+                if (exponent == integer_exponent) {
+                    // exponent (as double) is exact integer representation
+                    return std::pow(c0, integer_exponent);
+                }
+                else {
+                    throw std::range_error("Cannot use 'negative' complex numbers with non-integer exponents");
+                }
             }
         }
     }
@@ -497,6 +510,11 @@ MultiComplex<TN> log(const MultiComplex<TN>& z) {
 
 template<typename TN>
 MultiComplex<TN> pow(const MultiComplex<TN>& z, double e) {
+    return z.pow(e);
+}
+
+template<typename TN>
+MultiComplex<TN> pow(const MultiComplex<TN>& z, int e) {
     return z.pow(e);
 }
 

@@ -52,6 +52,7 @@ TEST_CASE("square of negative number", "[ops]") {
     CHECK(ee*ee == (mce.pow(2)).complex());
     CHECK(ee*ee == (mce.pow(2.0)).complex());
     CHECK(ee*ee == (pow(mce, 2.0)).complex());
+    CHECK_THROWS(mce.pow(2.1));
 }
 
 TEST_CASE("1/n derivs","[1D]") {
