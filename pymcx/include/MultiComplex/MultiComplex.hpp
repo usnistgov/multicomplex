@@ -349,27 +349,27 @@ struct MultiComplex
                 // Special case 'negative' arguments
                 if (exponent == integer_exponent){
                     // exponent (as double) is exact integer representation
-                    return std::pow(c, integer_exponent);
+                    return pow(integer_exponent);
                 }
                 else {
                     throw std::range_error("Cannot use 'negative' complex numbers with non-integer exponents");
                 }
             }
             else {
-                return std::pow(c, exponent);
+                return (exponent * log(*this)).exp();
             }
         }
         else{
-            // a^b = exp(ln(a^b)) = exp(b*ln(a))
             auto c0 = coef[0];
             if (c0 >= 0){
+                // a^b = exp(ln(a^b)) = exp(b*ln(a))
                 return (exponent*log(*this)).exp();
             }
             else {
                 // Special case 'negative' arguments
                 if (exponent == integer_exponent) {
                     // exponent (as double) is exact integer representation
-                    return std::pow(c0, integer_exponent);
+                    return pow(integer_exponent);
                 }
                 else {
                     throw std::range_error("Cannot use 'negative' complex numbers with non-integer exponents");

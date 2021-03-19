@@ -55,6 +55,16 @@ TEST_CASE("square of negative number", "[ops]") {
     CHECK_THROWS(mce.pow(2.1));
 }
 
+TEST_CASE("Integer and non-integer powers", "[ops]") {
+    std::complex<double> ee = std::complex<double>(0.1, 1e-100);
+    MultiComplex<double> mce(ee);
+    CHECK(ee * ee == (mce * mce).complex());
+    CHECK(ee * ee == (mce.pow(2)).complex());
+    CHECK(ee * ee == (mce.pow(2.0)).complex());
+    CHECK(ee * ee == (pow(mce, 2.0)).complex());
+    CHECK(pow(ee, 2.1) == (mce.pow(2.1)).complex());
+}
+
 TEST_CASE("1/n derivs","[1D]") {
     typedef std::function<MultiComplex<double>(const MultiComplex<double>&)> fcn_t;
     fcn_t ff = [](const MultiComplex<double>& z) {
