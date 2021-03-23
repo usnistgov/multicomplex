@@ -154,14 +154,14 @@ TEST_CASE("x^4 derivs, returned as tuple", "[1D]") {
 }
 
 TEST_CASE("Higher derivatives","[ND]") {
-    auto func = [](const std::vector<MultiComplex<double>>& zs) {
+    auto func = [](const std::vector<MultiComplex<double>>& zs){
         return cos(zs[0]) * sin(zs[1]) * exp(zs[2]);
     };
     SECTION("110"){
         std::vector<double> xs = { 0.1234, 20.1234, -4.1234 };
         std::vector<int> order = { 1, 1, 0 };
         auto exact = -sin(xs[0]) * cos(xs[1]) * exp(xs[2]);
-        auto num = diff_mcxN<double>(func, xs, order);
+        auto num = diff_mcxN(func, xs, order);
         auto abs_err = std::abs(exact-num);
         REQUIRE(abs_err < 1e-15);
     }
@@ -169,7 +169,7 @@ TEST_CASE("Higher derivatives","[ND]") {
         std::vector<double> xs = { 0.1234, 20.1234, -4.1234 };
         std::vector<int> order = { 1, 1, 4 };
         auto exact = -sin(xs[0]) * cos(xs[1]) * exp(xs[2]);
-        auto num = diff_mcxN<double>(func, xs, order);
+        auto num = diff_mcxN(func, xs, order);
         auto abs_err = std::abs(exact - num);
         REQUIRE(abs_err < 1e-15);
     }
@@ -177,13 +177,13 @@ TEST_CASE("Higher derivatives","[ND]") {
         std::vector<double> xs = { 0.1234, 20.1234, -4.1234 };
         std::vector<int> order = { 4, 1, 4 };
         auto exact = cos(xs[0]) * cos(xs[1]) * exp(xs[2]);
-        auto num = diff_mcxN<double>(func, xs, order);
+        auto num = diff_mcxN(func, xs, order);
         auto abs_err = std::abs(exact - num);
         REQUIRE(abs_err < 1e-15);
     }
     SECTION("Bad") {
         std::vector<double> xs = { 0.1234, 20.1234, -4.1234 };
         std::vector<int> order = { 4 };
-        CHECK_THROWS(diff_mcxN<double>(func, xs, order));
+        CHECK_THROWS(diff_mcxN(func, xs, order));
     }
 }

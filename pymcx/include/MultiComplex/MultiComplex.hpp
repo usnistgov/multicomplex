@@ -615,10 +615,10 @@ std::tuple<std::vector<TN>, std::vector<TN>> diff_mcx1(
  @param order The order of derivatives w.r.t. the independent variables. [1,0,1] would a first derivative with respect to the first variable and a first partial derivative with respect to the third variable
  @return out The numerical derivative that was obtained.  
  */
-template<typename TN>
-TN diff_mcxN(
-    std::function<MultiComplex<TN>(const std::vector<MultiComplex<TN>> &)> f,
-    const std::vector<TN> &x, 
+template<typename FuncType, typename PointType>
+auto diff_mcxN(
+    const FuncType &f,
+    const PointType &x,
     const std::vector<int> &orders)
 {
     if (x.size() != orders.size()) {
@@ -631,11 +631,13 @@ TN diff_mcxN(
     }
     // The total number of derivatives to take
     int numderiv = std::accumulate(orders.begin(), orders.end(), 0);
+
+    using TN = PointType::value_type;
     
     // The tiny step
     TN DELTA = increment(numderiv);
     
-    std::vector<MultiComplex<TN>> zs;
+    std::vector<MultiComplex<typename PointType::value_type>> zs(x.size());
     int k_counter = 0;
     for (auto i = 0; i < x.size(); ++i){
         // Coeffs of the multicomplex number, filled by default
@@ -649,9 +651,9 @@ TN diff_mcxN(
             c[exp2i(k_counter)] = DELTA;
             k_counter++;
         }
-        zs.emplace_back(c);
+        zs[i] = c;
     }
-    // Call the function with our vector of multicomplex arguments
+    // Call the function with our multicomplex arguments
     auto o = f(zs);
     // Return the desired derivative
     return o[exp2i(numderiv)-1]/pow(DELTA, numderiv);
