@@ -154,8 +154,9 @@ TEST_CASE("x^4 derivs, returned as tuple", "[1D]") {
 }
 
 TEST_CASE("Higher derivatives","[ND]") {
-    auto func = [](const std::vector<MultiComplex<double>>& zs){
-        return cos(zs[0]) * sin(zs[1]) * exp(zs[2]);
+    using fcn_t = std::function<MultiComplex<double>(const std::vector<MultiComplex<double>>&)>;
+    fcn_t func = [](const std::vector<MultiComplex<double>>& zs){
+            return cos(zs[0]) * sin(zs[1]) * exp(zs[2]);
     };
     SECTION("110"){
         std::vector<double> xs = { 0.1234, 20.1234, -4.1234 };
@@ -187,3 +188,55 @@ TEST_CASE("Higher derivatives","[ND]") {
         CHECK_THROWS(diff_mcxN(func, xs, order));
     }
 }
+
+TEST_CASE("Higher derivatives w/ std::valarray", "[ND]") {
+    using fcn_t = std::function<MultiComplex<double>(const std::valarray<MultiComplex<double>>&)>;
+    fcn_t func = [](const std::valarray<MultiComplex<double>>& zs) {
+        return cos(zs[0]) * sin(zs[1]) * exp(zs[2]);
+    };
+    SECTION("110") {
+        std::valarray<double> xs = { 0.1234, 20.1234, -4.1234 };
+        std::vector<int> order = { 1, 1, 0 };
+        auto exact = -sin(xs[0]) * cos(xs[1]) * exp(xs[2]);
+        auto num = diff_mcxN(func, xs, order);
+        auto abs_err = std::abs(exact - num);
+        REQUIRE(abs_err < 1e-15);
+    }
+    SECTION("114") {
+        std::valarray<double> xs = { 0.1234, 20.1234, -4.1234 };
+        std::vector<int> order = { 1, 1, 4 };
+        auto exact = -sin(xs[0]) * cos(xs[1]) * exp(xs[2]);
+        auto num = diff_mcxN(func, xs, order);
+        auto abs_err = std::abs(exact - num);
+        REQUIRE(abs_err < 1e-15);
+    }
+    SECTION("414") {
+        std::valarray<double> xs = { 0.1234, 20.1234, -4.1234 };
+        std::vector<int> order = { 4, 1, 4 };
+        auto exact = cos(xs[0]) * cos(xs[1]) * exp(xs[2]);
+        auto num = diff_mcxN(func, xs, order);
+        auto abs_err = std::abs(exact - num);
+        REQUIRE(abs_err < 1e-15);
+    }
+    SECTION("Bad") {
+        std::valarray<double> xs = { 0.1234, 20.1234, -4.1234 };
+        std::vector<int> order = { 4 };
+        CHECK_THROWS(diff_mcxN(func, xs, order));
+    }
+}
+//
+//TEST_CASE("Hessian", "[ND]") {
+//    auto func = [](const std::valarray<MultiComplex<double>>& zs) -> MultiComplex<double> {
+//        return cos(zs[0]) * sin(zs[1]);
+//    };
+//    double x =0.1234, y=20.1234, z=-4.1234;
+//    std::valarray<std::valarray<double>> Hessianexact = {{sin(y) * cos(x), -sin(x) * cos(y)}, {-sin(x) * cos(y), -sin(y) * cos(x)}};
+//    
+//    SECTION("Hessian") {
+//        std::valarray<double> pt = {x, y};
+//        using mattype = std::valarray<std::valarray<double>>;
+//        using functype = decltype(func);
+//        auto H = get_Hessian<mattype, functype, std::valarray<double>, HessianMethods::Multiple>(func, pt);
+//        int rr =0;
+//    }
+//}

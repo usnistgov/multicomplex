@@ -607,6 +607,20 @@ std::tuple<std::vector<TN>, std::vector<TN>> diff_mcx1(
     return std::make_tuple(ders,errs);
 }
 
+
+template<typename T> struct function_traits;
+
+template<typename R, typename ...Args>
+struct function_traits<std::function<R(Args...)>>
+{
+    template <size_t i> 
+    struct arg
+    {
+        using argtype = typename std::tuple_element<i, std::tuple<Args...>>::type; // with constness and everything
+        using type = typename std::decay<typename argtype>::type;
+    };
+};
+
 /**
  The specified derivatives of a function that takes multiple variables
 
@@ -637,7 +651,8 @@ auto diff_mcxN(
     // The tiny step
     TN DELTA = increment(numderiv);
     
-    std::vector<MultiComplex<typename PointType::value_type>> zs(x.size());
+    using MCVecType = typename function_traits<FuncType>::arg<0>::type;
+    MCVecType zs(x.size());
     int k_counter = 0;
     for (auto i = 0; i < x.size(); ++i){
         // Coeffs of the multicomplex number, filled by default
