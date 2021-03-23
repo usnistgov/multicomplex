@@ -224,19 +224,23 @@ TEST_CASE("Higher derivatives w/ std::valarray", "[ND]") {
         CHECK_THROWS(diff_mcxN(func, xs, order));
     }
 }
-//
-//TEST_CASE("Hessian", "[ND]") {
-//    auto func = [](const std::valarray<MultiComplex<double>>& zs) -> MultiComplex<double> {
-//        return cos(zs[0]) * sin(zs[1]);
-//    };
-//    double x =0.1234, y=20.1234, z=-4.1234;
-//    std::valarray<std::valarray<double>> Hessianexact = {{sin(y) * cos(x), -sin(x) * cos(y)}, {-sin(x) * cos(y), -sin(y) * cos(x)}};
-//    
-//    SECTION("Hessian") {
-//        std::valarray<double> pt = {x, y};
-//        using mattype = std::valarray<std::valarray<double>>;
-//        using functype = decltype(func);
-//        auto H = get_Hessian<mattype, functype, std::valarray<double>, HessianMethods::Multiple>(func, pt);
-//        int rr =0;
-//    }
-//}
+
+TEST_CASE("Hessian", "[ND]") {
+    using fcn_t = std::function< MultiComplex<double>(const std::valarray<MultiComplex<double>>&)>;
+    fcn_t func = [](const std::valarray<MultiComplex<double>>& zs) -> MultiComplex<double> {
+        return cos(zs[0]) * sin(zs[1]);
+    };
+    double x =0.1234, y=20.1234, z=-4.1234;
+    std::valarray<std::valarray<double>> Hessianexact = {{-sin(y) * cos(x), -sin(x) * cos(y)}, {-sin(x) * cos(y), -sin(y) * cos(x)}};
+    
+    SECTION("Hessian multiple") {
+        std::valarray<double> pt = {x, y};
+        using mattype = std::valarray<std::valarray<double>>;
+        using functype = decltype(func);
+        auto H = get_Hessian<mattype, functype, std::valarray<double>, HessianMethods::Multiple>(func, pt);
+        for (auto i = 0; i < 2; ++i) {
+            CHECK(std::abs((H[i]-Hessianexact[i]).max()) < 1e-14);
+        }
+        int rr =0;
+    }
+}

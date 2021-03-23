@@ -674,4 +674,106 @@ auto diff_mcxN(
     return o[exp2i(numderiv)-1]/pow(DELTA, numderiv);
 }
 
+namespace detail{
+    // Generic setting functions to handle Eigen types and STL types with the same interface
+    template<typename MatrixLike, typename Integer, typename ValType>
+    void setval(MatrixLike& m, Integer i, Integer j, const ValType val) {
+        m(i, j) = val;
+    }
+
+    // Partial specialization for valarray "matrix"
+    template <> void setval<std::valarray<std::valarray<double>>, std::size_t, double>(std::valarray<std::valarray<double>>& m, std::size_t i, std::size_t j, const double val) {
+        m[i][j] = val;
+    }
+
+    // Generic resizing functions to handle Eigen types and STL types with the same interface
+    template<typename MatrixLike, typename Integer>
+    void resizemat(MatrixLike& m, Integer i, Integer j) {
+        m.resize(i, j);
+    }
+
+    // Partial specialization for valarray "matrix"
+    template <> void resizemat<std::valarray<std::valarray<double>>, std::size_t>(std::valarray<std::valarray<double>>& m, std::size_t M, std::size_t N) {
+        m.resize(M);
+        for (auto i = 0; i < M; ++i){
+            m[i] = std::valarray<double>(0.0, N);
+        }
+    }
+}
+
+enum class HessianMethods {OneBig, Multiple};
+template<typename MatType, typename FuncType, typename ArgType, HessianMethods method = HessianMethods::OneBig>
+auto get_Hessian(const FuncType &f, const ArgType& x)
+{
+    if (x.size() != 2) {
+        throw std::invalid_argument(
+            "Length of x: "
+            + std::to_string(x.size())
+            + " does not equal 2"
+        );
+    }
+    MatType H;
+    std::size_t N = 2;
+    detail::resizemat(H, N, N);
+
+    if constexpr (method == HessianMethods::OneBig) {
+        std::invalid_argument("Not yet implemented; also probably a bad idea anyway")
+        //// Take a single derivative w.r.t. independent variables
+
+        //// The total number of derivatives to take
+        //std::vector<int> orders = {3, 3};
+        //int numderiv = 6; // 3 in each variable so we get all the second partial derivatives
+
+        //using TN = ArgType::value_type;
+
+        //// The tiny step
+        //auto DELTA = increment(numderiv);
+
+        //using MCVecType = typename function_traits<FuncType>::arg<0>::type;
+        //MCVecType zs(x.size());
+        //int k_counter = 0;
+        //for (auto i = 0; i < x.size(); ++i) {
+        //    // Coeffs of the multicomplex number, filled by default
+        //    // with zeros. The array of coefficients is of length 2^(numderiv)
+        //    std::valarray<TN> c(0.0, exp2i(numderiv));
+        //    // The real component as passed to function
+        //    c[0] = x[i];
+        //    // The very, very small offset number goes in all the indices
+        //    // 2^k for 0 <= k < order[i]. 
+        //    for (int k = 0; k < orders[i]; ++k) {
+        //        c[exp2i(k_counter)] = DELTA;
+        //        k_counter++;
+        //    }
+        //    zs[i] = c;
+        //}
+        //// Call the function with our multicomplex arguments
+        //auto o = f(zs);
+        //// Extract the desired derivative
+        //for (auto i = 0; i < 2; ++i) {
+        //    for (auto j = 0; j < 2; ++j) {
+        //        numderiv = i+j;
+        //        H[i][j] = o[exp2i(numderiv) - 1] / pow(DELTA, numderiv);
+        //    }
+        //}
+        //return H;
+    }
+    else if constexpr (method == HessianMethods::Multiple) {
+        // Take multiple second derivatives, for each commbination
+        for (std::size_t i = 0; i < x.size(); ++i) {
+            for (std::size_t j = i; j < x.size(); ++j) {
+                std::vector<int> order = { 0, 0 };
+                order[i] += 1;
+                order[j] += 1;
+                auto val = diff_mcxN(f, x, order);
+                detail::setval(H, i, j, val);
+                detail::setval(H, j, i, val);
+            }
+        }
+        return H;
+    }
+    else {
+        std::invalid_argument("incomplete options");
+    }
+}
+
 #endif
