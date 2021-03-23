@@ -16,38 +16,38 @@ inline bool all_finite(const VEC& vec) {
 }
 
 TEST_CASE("Myslice", "[myslice]") {
-    std::slice even_increments = myslice(0, 10, 2);
-    std::slice uneven_increments = myslice(0, 10, 3);
+    std::slice even_increments = mcx::myslice(0, 10, 2);
+    std::slice uneven_increments = mcx::myslice(0, 10, 3);
     REQUIRE(even_increments.size() == 5);
     REQUIRE(uneven_increments.size() == 3);
 }
 
 TEST_CASE("log2i", "[log2i]") {
-    CHECK(log2i(1) == 0); 
-    CHECK(log2i(2) == 1);
-    CHECK(log2i(4) == 2);
-    CHECK_THROWS(log2i(7));
+    CHECK(mcx::log2i(1) == 0);
+    CHECK(mcx::log2i(2) == 1);
+    CHECK(mcx::log2i(4) == 2);
+    CHECK_THROWS(mcx::log2i(7));
 }
 
 TEST_CASE("real(MCX)", "[1D]") {
-    MultiComplex<double> z{ std::complex<double>{3.0, 1e-100} };
+    mcx::MultiComplex<double> z{ std::complex<double>{3.0, 1e-100} };
     REQUIRE(z.real() == 3.0);
 }
 
 TEST_CASE("MCX < double", "[1D]") {
-    MultiComplex<double> z{ std::complex<double>{3.0, 1e-100} };
+    mcx::MultiComplex<double> z{ std::complex<double>{3.0, 1e-100} };
     REQUIRE(z < 4.0);
 }
 
 TEST_CASE("exp(-big)", "[1D]") {
-    MultiComplex<double> n{{-100000, 1e-50, 1e-50, 1e-150}}, 
+    mcx::MultiComplex<double> n{{-100000, 1e-50, 1e-50, 1e-150}},
                          nexp = exp(n);
     REQUIRE(all_finite(nexp.get_coef()) == true);
 }
 
 TEST_CASE("square of negative number", "[ops]") {
     std::complex<double> ee = std::complex<double>(-0.1, 1e-100);
-    MultiComplex<double> mce(ee);
+    mcx::MultiComplex<double> mce(ee);
     CHECK(ee*ee == (mce*mce).complex());
     CHECK(ee*ee == (mce.pow(2)).complex());
     CHECK(ee*ee == (mce.pow(2.0)).complex());
@@ -57,7 +57,7 @@ TEST_CASE("square of negative number", "[ops]") {
 
 TEST_CASE("Integer and non-integer powers", "[ops]") {
     std::complex<double> ee = std::complex<double>(0.1, 1e-100);
-    MultiComplex<double> mce(ee);
+    mcx::MultiComplex<double> mce(ee);
     CHECK(ee * ee == (mce * mce).complex());
     CHECK(ee * ee == (mce.pow(2)).complex());
     CHECK(ee * ee == (mce.pow(2.0)).complex());
@@ -66,13 +66,13 @@ TEST_CASE("Integer and non-integer powers", "[ops]") {
 }
 
 TEST_CASE("1/n derivs","[1D]") {
-    typedef std::function<MultiComplex<double>(const MultiComplex<double>&)> fcn_t;
-    fcn_t ff = [](const MultiComplex<double>& z) {
+    typedef std::function<mcx::MultiComplex<double>(const mcx::MultiComplex<double>&)> fcn_t;
+    fcn_t ff = [](const mcx::MultiComplex<double>& z) {
         return 1.0 / z;
     };
     double x = 0.1234; 
     int numderiv = 6;
-    auto fo = diff_mcx1(ff, x, numderiv);
+    auto fo = mcx::diff_mcx1(ff, x, numderiv);
     std::vector<double> exacts;
     auto factorial = [](int n) {
         return std::tgamma(n + 1);
@@ -88,13 +88,13 @@ TEST_CASE("1/n derivs","[1D]") {
 }
 
 TEST_CASE("x^4 derivs", "[1D]") {
-    typedef std::function<MultiComplex<double>(const MultiComplex<double>&)> fcn_t;
-    fcn_t ff = [](const MultiComplex<double>& z) {
+    typedef std::function<mcx::MultiComplex<double>(const mcx::MultiComplex<double>&)> fcn_t;
+    fcn_t ff = [](const mcx::MultiComplex<double>& z) {
         return z.pow(4);
     };
     double x = 0.1234;
     int numderiv = 6;
-    auto fo = diff_mcx1(ff, x, numderiv);
+    auto fo = mcx::diff_mcx1(ff, x, numderiv);
     std::vector<double> exacts(numderiv);
     exacts[0] = 4*std::pow(x,3);
     exacts[1] = 12*std::pow(x, 2);
@@ -110,13 +110,13 @@ TEST_CASE("x^4 derivs", "[1D]") {
 }
 
 TEST_CASE("x^4 derivs; 4 double", "[1D]") {
-    typedef std::function<MultiComplex<double>(const MultiComplex<double>&)> fcn_t;
-    fcn_t ff = [](const MultiComplex<double>& z) {
+    typedef std::function<mcx::MultiComplex<double>(const mcx::MultiComplex<double>&)> fcn_t;
+    fcn_t ff = [](const mcx::MultiComplex<double>& z) {
         return z.pow(4.0);
     };
     double x = 0.1234;
     int numderiv = 6;
-    auto fo = diff_mcx1(ff, x, numderiv);
+    auto fo = mcx::diff_mcx1(ff, x, numderiv);
     std::vector<double> exacts(numderiv);
     exacts[0] = 4.0*std::pow(x, 3.0);
     exacts[1] = 12.0*std::pow(x, 2.0);
@@ -132,13 +132,13 @@ TEST_CASE("x^4 derivs; 4 double", "[1D]") {
 }
 
 TEST_CASE("x^4 derivs, returned as tuple", "[1D]") {
-    using fcn_t = std::function<std::tuple<MultiComplex<double>, MultiComplex<double>>(const MultiComplex<double>&)>;
-    fcn_t ff = [](const MultiComplex<double>& z) {
+    using fcn_t = std::function<std::tuple<mcx::MultiComplex<double>, mcx::MultiComplex<double>>(const mcx::MultiComplex<double>&)>;
+    fcn_t ff = [](const mcx::MultiComplex<double>& z) {
         return std::make_tuple(z.pow(4.0), z.pow(4.0));
     };
     double x = 0.1234;
     int numderiv = 6;
-    auto [fo, err] = diff_mcx1(ff, x, numderiv); // A dummy error output for testing
+    auto [fo, err] = mcx::diff_mcx1(ff, x, numderiv); // A dummy error output for testing
     std::vector<double> exacts(numderiv);
     exacts[0] = 4.0 * std::pow(x, 3.0);
     exacts[1] = 12.0 * std::pow(x, 2.0);
@@ -154,9 +154,9 @@ TEST_CASE("x^4 derivs, returned as tuple", "[1D]") {
 }
 
 TEST_CASE("Higher derivatives","[ND]") {
-    using fcn_t = std::function<MultiComplex<double>(const std::vector<MultiComplex<double>>&)>;
-    fcn_t func = [](const std::vector<MultiComplex<double>>& zs){
-            return cos(zs[0]) * sin(zs[1]) * exp(zs[2]);
+    using fcn_t = std::function<mcx::MultiComplex<double>(const std::vector<mcx::MultiComplex<double>>&)>;
+    fcn_t func = [](const std::vector<mcx::MultiComplex<double>>& zs){
+        return cos(zs[0]) * sin(zs[1]) * exp(zs[2]);
     };
     SECTION("110"){
         std::vector<double> xs = { 0.1234, 20.1234, -4.1234 };
@@ -190,8 +190,8 @@ TEST_CASE("Higher derivatives","[ND]") {
 }
 
 TEST_CASE("Higher derivatives w/ std::valarray", "[ND]") {
-    using fcn_t = std::function<MultiComplex<double>(const std::valarray<MultiComplex<double>>&)>;
-    fcn_t func = [](const std::valarray<MultiComplex<double>>& zs) {
+    using fcn_t = std::function<mcx::MultiComplex<double>(const std::valarray<mcx::MultiComplex<double>>&)>;
+    fcn_t func = [](const std::valarray<mcx::MultiComplex<double>>& zs) {
         return cos(zs[0]) * sin(zs[1]) * exp(zs[2]);
     };
     SECTION("110") {
@@ -226,8 +226,8 @@ TEST_CASE("Higher derivatives w/ std::valarray", "[ND]") {
 }
 
 TEST_CASE("Hessian", "[ND]") {
-    using fcn_t = std::function< MultiComplex<double>(const std::valarray<MultiComplex<double>>&)>;
-    fcn_t func = [](const std::valarray<MultiComplex<double>>& zs) -> MultiComplex<double> {
+    using fcn_t = std::function< mcx::MultiComplex<double>(const std::valarray<mcx::MultiComplex<double>>&)>;
+    fcn_t func = [](const std::valarray<mcx::MultiComplex<double>>& zs) -> mcx::MultiComplex<double> {
         return cos(zs[0]) * sin(zs[1]);
     };
     double x =0.1234, y=20.1234, z=-4.1234;
@@ -237,7 +237,7 @@ TEST_CASE("Hessian", "[ND]") {
         std::valarray<double> pt = {x, y};
         using mattype = std::valarray<std::valarray<double>>;
         using functype = decltype(func);
-        auto H = get_Hessian<mattype, functype, std::valarray<double>, HessianMethods::Multiple>(func, pt);
+        auto H = mcx::get_Hessian<mattype, functype, std::valarray<double>, mcx::HessianMethods::Multiple>(func, pt);
         for (auto i = 0; i < 2; ++i) {
             CHECK(std::abs((H[i]-Hessianexact[i]).max()) < 1e-14);
         }

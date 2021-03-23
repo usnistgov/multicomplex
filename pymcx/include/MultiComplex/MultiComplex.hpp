@@ -13,6 +13,8 @@
 #include <numeric>
 #include <cmath>
 
+namespace mcx {
+
 // A custom slice, more like Python, where the arguments to the slice are start, stop, increment
 // rather than start, number of times, increment
 auto myslice(std::size_t start, std::size_t stop, std::size_t increment) {
@@ -442,6 +444,14 @@ struct MultiComplex
     };
 };
 
+/* */
+double pow(double x, double e){ return std::pow(x,e); }
+double log(double x) { return std::log(x); }
+double cos(double x) { return std::cos(x); }
+double sin(double x) { return std::sin(x); }
+double cosh(double x) { return std::cosh(x); }
+double sinh(double x) { return std::sinh(x); }
+
 /// Helper function that allows for pre-addition by calling the postfix function
 template <typename TN>
 MultiComplex<TN> operator+(TN value, const MultiComplex<TN>& mc) {
@@ -651,8 +661,10 @@ auto diff_mcxN(
     // The tiny step
     TN DELTA = increment(numderiv);
     
+    // Get the type of the container of arguments to function, to allow for std::vector, std::array, etc.
     using MCVecType = typename function_traits<FuncType>::arg<0>::type;
     MCVecType zs(x.size());
+
     int k_counter = 0;
     for (auto i = 0; i < x.size(); ++i){
         // Coeffs of the multicomplex number, filled by default
@@ -776,4 +788,5 @@ auto get_Hessian(const FuncType &f, const ArgType& x)
     }
 }
 
+}; // namespace mcx
 #endif
