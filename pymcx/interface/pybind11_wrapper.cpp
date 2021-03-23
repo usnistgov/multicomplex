@@ -9,7 +9,8 @@
 namespace py = pybind11;
 
 void init_MultiComplex(py::module &m){
-    typedef MultiComplex<double> MCD;
+    using namespace mcx;
+    using MCD = MultiComplex<double>;
 
     using TN = double;
     m.def("diff_mcx1", py::overload_cast<const std::function<MultiComplex<TN>(const MultiComplex<TN>&)>&, TN, int, bool>(&diff_mcx1<TN>), 
