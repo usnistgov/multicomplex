@@ -717,7 +717,7 @@ auto get_Hessian(const FuncType &f, const ArgType& x)
     detail::resizemat(H, N, N);
 
     if constexpr (method == HessianMethods::OneBig) {
-        std::invalid_argument("Not yet implemented; also probably a bad idea anyway")
+        throw std::invalid_argument("Not yet implemented; also probably a bad idea anyway");
         //// Take a single derivative w.r.t. independent variables
 
         //// The total number of derivatives to take
