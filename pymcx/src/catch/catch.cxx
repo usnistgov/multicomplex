@@ -15,6 +15,14 @@ inline bool all_finite(const VEC& vec) {
     return all_ok;
 }
 
+template<typename T>
+inline bool almost_equal_complex(const std::complex<T>& v1, const std::complex<T>& v2, double re_tol, double im_tol) {
+    auto re_diff = std::abs(v1.real() - v2.real());
+    auto im_diff = std::abs(v1.imag() - v2.imag());
+    return re_diff < re_tol && im_diff < im_tol;
+}
+
+
 TEST_CASE("Myslice", "[myslice]") {
     std::slice even_increments = mcx::myslice(0, 10, 2);
     std::slice uneven_increments = mcx::myslice(0, 10, 3);
@@ -48,21 +56,21 @@ TEST_CASE("exp(-big)", "[1D]") {
 TEST_CASE("square of negative number", "[ops]") {
     std::complex<double> ee = std::complex<double>(-0.1, 1e-100);
     mcx::MultiComplex<double> mce(ee);
-    CHECK(ee*ee == (mce*mce).complex());
-    CHECK(ee*ee == (mce.pow(2)).complex());
-    CHECK(ee*ee == (mce.pow(2.0)).complex());
-    CHECK(ee*ee == (pow(mce, 2.0)).complex());
+    CHECK(almost_equal_complex(ee*ee, (mce*mce).complex(), 1e-14, 1e-99));
+    CHECK(almost_equal_complex(ee*ee, (mce.pow(2)).complex(), 1e-14, 1e-99));
+    CHECK(almost_equal_complex(ee*ee, (mce.pow(2.0)).complex(), 1e-14, 1e-99));
+    CHECK(almost_equal_complex(ee*ee, (pow(mce, 2.0)).complex(), 1e-14, 1e-99));
     CHECK_THROWS(mce.pow(2.1));
 }
 
 TEST_CASE("Integer and non-integer powers", "[ops]") {
     std::complex<double> ee = std::complex<double>(0.1, 1e-100);
     mcx::MultiComplex<double> mce(ee);
-    CHECK(ee * ee == (mce * mce).complex());
-    CHECK(ee * ee == (mce.pow(2)).complex());
-    CHECK(ee * ee == (mce.pow(2.0)).complex());
-    CHECK(ee * ee == (pow(mce, 2.0)).complex());
-    CHECK(pow(ee, 2.1) == (mce.pow(2.1)).complex());
+    CHECK(almost_equal_complex(ee * ee, (mce * mce).complex(), 1e-14, 1e-99));
+    CHECK(almost_equal_complex(ee * ee, (mce.pow(2)).complex(), 1e-14, 1e-99));
+    CHECK(almost_equal_complex(ee * ee, (mce.pow(2.0)).complex(), 1e-14, 1e-99));
+    CHECK(almost_equal_complex(ee * ee, (pow(mce, 2.0)).complex(), 1e-14, 1e-99));
+    CHECK(almost_equal_complex(pow(ee, 2.1), (mce.pow(2.1)).complex(), 1e-14, 1e-99));
 }
 
 TEST_CASE("1/n derivs","[1D]") {
@@ -106,7 +114,7 @@ TEST_CASE("x^4 derivs", "[1D]") {
     for (auto i = 0; i < numderiv; ++i) {
         abs_errs += std::abs((fo[i] - exacts[i]));
     }
-    REQUIRE(abs_errs < 1e-12);
+    REQUIRE(abs_errs < 1e-10);
 }
 
 TEST_CASE("x^4 derivs; 4 double", "[1D]") {
@@ -128,7 +136,7 @@ TEST_CASE("x^4 derivs; 4 double", "[1D]") {
     for (auto i = 0; i < numderiv; ++i) {
         abs_errs += std::abs((fo[i] - exacts[i]));
     }
-    REQUIRE(abs_errs < 1e-12);
+    REQUIRE(abs_errs < 1e-10);
 }
 
 TEST_CASE("x^4 derivs, returned as tuple", "[1D]") {
@@ -150,7 +158,7 @@ TEST_CASE("x^4 derivs, returned as tuple", "[1D]") {
     for (auto i = 0; i < numderiv; ++i) {
         abs_errs += std::abs((fo[i] - exacts[i]));
     }
-    REQUIRE(abs_errs < 1e-12);
+    REQUIRE(abs_errs < 1e-10);
 }
 
 TEST_CASE("Higher derivatives","[ND]") {
