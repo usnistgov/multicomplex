@@ -623,11 +623,9 @@ template<typename T> struct function_traits;
 template<typename R, typename ...Args>
 struct function_traits<std::function<R(Args...)>>
 {
-    template <size_t i> 
-    struct arg
-    {
-        using argtype = typename std::tuple_element<i, std::tuple<Args...>>::type; // with constness and everything
-        using type = typename std::decay<argtype>::type;
+    template <size_t i>
+    struct arg{
+        using type = typename std::decay<typename std::tuple_element<i, std::tuple<Args...>>::type>::type;
     };
 };
 
