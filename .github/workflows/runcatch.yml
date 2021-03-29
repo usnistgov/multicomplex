@@ -16,7 +16,7 @@ jobs:
     - name: cmake config
       run: cd pymcx/build && cmake .. -DCMAKE_BUILD_TYPE=Release
     - name: cmake make
-      run: cmake --build build
+      run: cmake --build .
     # run tests
     - name: run Catch tests
-      run: build/catchtests
+      run: ./catchtests
