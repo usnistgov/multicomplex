@@ -627,7 +627,7 @@ struct function_traits<std::function<R(Args...)>>
     struct arg
     {
         using argtype = typename std::tuple_element<i, std::tuple<Args...>>::type; // with constness and everything
-        using type = typename std::decay<typename argtype>::type;
+        using type = typename std::decay<argtype>::type;
     };
 };
 
@@ -656,7 +656,7 @@ auto diff_mcxN(
     // The total number of derivatives to take
     int numderiv = std::accumulate(orders.begin(), orders.end(), 0);
 
-    using TN = PointType::value_type;
+    using TN = typename PointType::value_type;
     
     // The tiny step
     TN DELTA = increment(numderiv);
