@@ -662,7 +662,7 @@ auto diff_mcxN(
     TN DELTA = increment(numderiv);
     
     // Get the type of the container of arguments to function, to allow for std::vector, std::array, etc.
-    using MCVecType = typename function_traits<FuncType>::arg<0>::type;
+    using MCVecType = function_traits<FuncType>::arg<0>::type;
     MCVecType zs(x.size());
 
     int k_counter = 0;
