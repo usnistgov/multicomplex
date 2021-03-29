@@ -5,7 +5,7 @@ project(MULTICOMPLEX)
 set (CMAKE_CXX_STANDARD 17)
 
 # Add the pybind11 stuff
-if (NOT CEGO_NO_PYTHON)
+if (NOT MULTICOMPLEX_NO_PYTHON)
     add_subdirectory("${CMAKE_SOURCE_DIR}/externals/pybind11" "pybind11")
 endif()
 
@@ -51,7 +51,7 @@ if (NOT MULTICOMPLEX_NO_PYTHON)
   attach_includes(pymcx)
 endif()
 
-if (CEGO_ALL)
+if (MULTICOMPLEX_ALL)
   set(APP_SOURCES)
   if (MSVC)
       list(APPEND APP_SOURCES "${CMAKE_SOURCE_DIR}/externals/Eigen/debug/msvc/eigen.natvis")
