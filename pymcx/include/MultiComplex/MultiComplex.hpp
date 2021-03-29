@@ -617,16 +617,14 @@ std::tuple<std::vector<TN>, std::vector<TN>> diff_mcx1(
     return std::make_tuple(ders,errs);
 }
 
-
+// Base template for function traits
 template<typename T> struct function_traits;
 
+// Partial specialization for std::function argument
 template<typename R, typename ...Args>
 struct function_traits<std::function<R(Args...)>>
 {
-    template <size_t i>
-    struct arg{
-        using type = typename std::decay<typename std::tuple_element<i, std::tuple<Args...>>::type>::type;
-    };
+    using argtype = typename std::decay<typename std::tuple_element<0, std::tuple<Args...>>::type>::type;
 };
 
 /**
@@ -661,7 +659,7 @@ auto diff_mcxN(
     
     // Get the type of the container of arguments to function, to allow for std::vector, std::array, etc.
     constexpr std::size_t zero = 0;
-    using MCVecType = typename function_traits<FuncType>::arg<zero>::type;
+    using MCVecType = typename function_traits<FuncType>::argtype;
     MCVecType zs(x.size());
 
     int k_counter = 0;
