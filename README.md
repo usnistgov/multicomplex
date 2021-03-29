@@ -4,6 +4,8 @@ pymcx is a Python-based multi complex algebra library.  This library is used to 
 
 At its core is a minimal header-only C++11 library that does the heavy lifting, and pybind11 is used to make a 1-to-1 interface between the C++ code and the Python interface
 
+[![build and run Catch tests](https://github.com/ianhbell/mcx/actions/workflows/runcatch.yml/badge.svg)](https://github.com/ianhbell/mcx/actions/workflows/runcatch.yml)
+
 ## Examples:
 
 Try it in your browser: [![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/ianhbell/mcx/master)
