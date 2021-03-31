@@ -209,8 +209,8 @@ struct MultiComplex
         if (L == 2) {
             // In order to avoid duplicate calculations (maybe compiler would 
             // optimize this away, but not clear), pre-calculate the values
-            T coshdp1 = cosh(d[id + 1]), sinhdp1 = sinh(d[id + 1]);
-            T cosd = cos(d[id]), sind = sin(d[id]);
+            T coshdp1 = ::cosh(d[id + 1]), sinhdp1 = ::sinh(d[id + 1]);
+            T cosd = ::cos(d[id]), sind = ::sin(d[id]);
             c[ic] = cosd * coshdp1;
             c[ic + 1] = -sind * sinhdp1;
             s[is] = sind * coshdp1;
@@ -238,8 +238,8 @@ struct MultiComplex
         if (L == 2) {
             // In order to avoid duplicate calculations (maybe compiler would 
             // optimize this away, but not clear), pre-calculate the values
-            T cosdp1 = cos(d[id + 1]), sindp1 = sin(d[id + 1]);
-            T coshd = cosh(d[id]), sinhd = sinh(d[id]);
+            T cosdp1 = ::cos(d[id + 1]), sindp1 = ::sin(d[id + 1]);
+            T coshd = ::cosh(d[id]), sinhd = ::sinh(d[id]);
             c[ic] = coshd * cosdp1;
             c[ic + 1] = sinhd * sindp1;
             s[is] = sinhd * cosdp1;
@@ -282,9 +282,9 @@ struct MultiComplex
         std::size_t L)
     {
         if (L == 2) {
-            T expd = std::exp(d[id]);
-            e[ie] = expd * cos(d[id + 1]);
-            e[ie + 1] = expd * sin(d[id + 1]);
+            T expd = ::exp(d[id]);
+            e[ie] = expd * ::cos(d[id + 1]);
+            e[ie + 1] = expd * ::sin(d[id + 1]);
             return;
         }
         std::size_t L2 = L / 2;
@@ -444,14 +444,6 @@ struct MultiComplex
     };
 };
 
-/* */
-double pow(double x, double e){ return std::pow(x,e); }
-double log(double x) { return std::log(x); }
-double cos(double x) { return std::cos(x); }
-double sin(double x) { return std::sin(x); }
-double cosh(double x) { return std::cosh(x); }
-double sinh(double x) { return std::sinh(x); }
-
 /// Helper function that allows for pre-addition by calling the postfix function
 template <typename TN>
 MultiComplex<TN> operator+(TN value, const MultiComplex<TN>& mc) {
@@ -504,7 +496,7 @@ MultiComplex<TN> log(const MultiComplex<TN>& z) {
     // Normally we would like to short-circuit for normal complex number, but can't here
     // because of the possible branch-cuts
     TN re = z[0], re_old = z[0];
-    MultiComplex<TN> y = log(z[0]); // Start off with the most-real component
+    MultiComplex<TN> y = ::log(z[0]); // Start off with the most-real component
     MultiComplex<TN> expny = exp(-y);
     for (auto counter = 0; counter <= 6; ++counter) {
         y = y - 2.0 * (1.0 - z * expny) / (1.0 + z * expny);
@@ -566,7 +558,7 @@ std::vector<TN> diff_mcx1(const std::function<MultiComplex<TN>(const MultiComple
     for (auto L = 1; L <= numderiv; ++L) {
         // The calculated value is sitting in the 2^L-1 index,
         // and then need to divide by DELTA^L
-        ders.push_back(o[int(exp2i(L) - 1)] / pow(DELTA, L));
+        ders.push_back(o[int(exp2i(L) - 1)] / ::pow(DELTA, L));
     }
     return ders;
 }
@@ -611,8 +603,8 @@ std::tuple<std::vector<TN>, std::vector<TN>> diff_mcx1(
     for (auto L = 1; L <= numderiv; ++L) {
         // The calculated value is sitting in the 2^L-1 index,
         // and then need to divide by DELTA^L
-        ders.push_back(o[int(exp2i(L) - 1)] / pow(DELTA, L));
-        errs.push_back(e[int(exp2i(L) - 1)] / pow(DELTA, L));
+        ders.push_back(o[int(exp2i(L) - 1)] / ::pow(DELTA, L));
+        errs.push_back(e[int(exp2i(L) - 1)] / ::pow(DELTA, L));
     }
     return std::make_tuple(ders,errs);
 }
@@ -680,7 +672,7 @@ auto diff_mcxN(
     // Call the function with our multicomplex arguments
     auto o = f(zs);
     // Return the desired derivative
-    return o[exp2i(numderiv)-1]/pow(DELTA, numderiv);
+    return o[exp2i(numderiv)-1]/::pow(DELTA, numderiv);
 }
 
 namespace detail{
