@@ -17,19 +17,19 @@ namespace mcx {
 
 // A custom slice, more like Python, where the arguments to the slice are start, stop, increment
 // rather than start, number of times, increment
-auto myslice(std::size_t start, std::size_t stop, std::size_t increment) {
+inline auto myslice(std::size_t start, std::size_t stop, std::size_t increment) {
     return std::slice(start, (stop - start) / increment, increment);
 }
 
 /// Raise 2 to the power i, where i is an integer
 // see https://stackoverflow.com/a/5345369 for explanation
-int exp2i(int i) {
+inline int exp2i(int i) {
     return 1 << i;
 }
 
 /// Log2i, where i is an integer
 /// Could still be more optimized if needed
-int log2i(int i) {
+inline int log2i(int i) {
     int val = int(log2(i));
     if (exp2i(val) != i) {
         throw std::invalid_argument("The argument to log2i " + std::to_string(i) + " is not a power of 2");
@@ -683,7 +683,7 @@ namespace detail{
     }
 
     // Partial specialization for valarray "matrix"
-    template <> void setval<std::valarray<std::valarray<double>>, std::size_t, double>(std::valarray<std::valarray<double>>& m, std::size_t i, std::size_t j, const double val) {
+    template <> inline void setval<std::valarray<std::valarray<double>>, std::size_t, double>(std::valarray<std::valarray<double>>& m, std::size_t i, std::size_t j, const double val) {
         m[i][j] = val;
     }
 
@@ -694,7 +694,7 @@ namespace detail{
     }
 
     // Partial specialization for valarray "matrix"
-    template <> void resizemat<std::valarray<std::valarray<double>>, std::size_t>(std::valarray<std::valarray<double>>& m, std::size_t M, std::size_t N) {
+    template <> inline void resizemat<std::valarray<std::valarray<double>>, std::size_t>(std::valarray<std::valarray<double>>& m, std::size_t M, std::size_t N) {
         m.resize(M);
         for (auto i = 0; i < M; ++i){
             m[i] = std::valarray<double>(0.0, N);
