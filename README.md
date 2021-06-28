@@ -1,19 +1,19 @@
-# pymcx
+# multicomplex
 
-pymcx is a Python-based multi complex algebra library.  This library is used to carry out numerical derivatives of (semi-)arbitrary numerical functions with nearly machine precision.
+``multicomplex`` is a Python-based multi complex algebra library.  This library is used to carry out numerical derivatives of (semi-)arbitrary numerical functions with nearly machine precision.
 
 At its core is a minimal header-only C++11 library that does the heavy lifting, and pybind11 is used to make a 1-to-1 interface between the C++ code and the Python interface
 
-[![build and run Catch tests](https://github.com/ianhbell/mcx/actions/workflows/runcatch.yml/badge.svg)](https://github.com/ianhbell/mcx/actions/workflows/runcatch.yml)
+[![build and run Catch tests](https://github.com/ianhbell/mcx/actions/workflows/runcatch.yml/badge.svg)](https://github.com/ianhbell/multicomplex/actions/workflows/runcatch.yml)
 
 ## Examples:
 
-Try it in your browser: [![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/ianhbell/mcx/master)
+Try it in your browser: [![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/ianhbell/multicomplex/master)
 
 Here is how to calculate the first 10 derivatives of sin(x) to numerical precision:
 
 ``` Python
-import pymcx
+import multicomplex as pymcx
 import numpy as np
 derivs = pymcx.diff_mcx1(lambda x: np.sin(x), 0.1234, 10)
 ```
@@ -46,7 +46,7 @@ The C++ and Python code was written by Ian Bell (of NIST), with special thanks t
 
 ## Contributing/Getting Help
 
-If you would like to contribute to ``pymcx`` or report a problem, please open a pull request or submit an issue.  Especially welcome would be additional tests.
+If you would like to contribute to ``multicomplex`` or report a problem, please open a pull request or submit an issue.  Especially welcome would be additional tests.
 
 If you want to discuss or request assistance, please open an issue.
 
@@ -73,7 +73,7 @@ it can be sometimes fixed by installing ``libgcc`` with conda: ``conda install l
 
 This will download the sources into a temporary directory and build and install the python extension so long as you have the necessary prerequisites:
 ```
-pip install git+git://github.com/ianhbell/mcx.git
+pip install git+git://github.com/ianhbell/multicomplex.git
 ```
 
 ### From a cloned repository
@@ -81,8 +81,8 @@ pip install git+git://github.com/ianhbell/mcx.git
 Alternatively, you can clone (recursively!) and run the ``setup.py`` script
 
 ```
-git clone --recursive https://github.com/ianhbell/mcx
-cd mcx
+git clone --recursive https://github.com/ianhbell/multicomplex
+cd multicomplex
 pip -vvv install .
 ```
 
@@ -104,8 +104,8 @@ With a debug build, you can step into the debugger to debug the C++ code, for in
 Starting in the root of the repo (a debug build with the default compiler, here on linux):
 
 ``` 
-git clone --recursive https://github.com/ianhbell/mcx
-cd mcx/pymcx
+git clone --recursive https://github.com/ianhbell/multicomplex
+cd multicomplex/multicomplex
 mkdir build
 cd build
 cmake ..
@@ -120,8 +120,8 @@ cmake --build .
 ```
 For Visual Studio 2015 (64-bit) in release mode, you would do:
 ``` 
-git clone --recursive https://github.com/ianhbell/mcx
-cd mcx/pymcx
+git clone --recursive https://github.com/ianhbell/multicomplex
+cd multicomplex/multicomplex
 mkdir build
 cd build
 cmake .. -G "Visual Studio 14 2015 Win64"
