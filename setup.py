@@ -10,9 +10,11 @@ from setuptools import setup, Extension
 from setuptools.command.build_ext import build_ext
 from distutils.version import LooseVersion
 
-VERSION = '0.10.0'
+VERSION = '0.11.0'
 with open('multicomplex/__init__.py','w') as fpinit:
     fpinit.write(f'__version__ = "{VERSION}"')
+
+here = os.path.dirname(os.path.abspath(__file__))
 
 class CMakeExtension(Extension):
     def __init__(self, name, sourcedir=''):
@@ -57,11 +59,8 @@ class CMakeBuild(build_ext):
                                                               self.distribution.get_version())
         if not os.path.exists(self.build_temp):
             os.makedirs(self.build_temp)
-        subprocess.check_call(['cmake', ext.sourcedir] + cmake_args, cwd=self.build_temp, env=env)
+        subprocess.check_call(['cmake', here+'/multicomplex'] + cmake_args, cwd=self.build_temp, env=env)
         subprocess.check_call(['cmake', '--build', '.'] + build_args, cwd=self.build_temp)
-
-here = os.path.dirname(os.path.abspath(__file__))
-os.chdir(here+'/multicomplex')
 
 setup(
     name='multicomplex',
@@ -70,6 +69,7 @@ setup(
     author_email='ian.bell@nist.gov',
     description='Multicomplex algebra in C++ with wrapper in python',
     long_description='',
+    packages=['multicomplex'],
     ext_modules=[CMakeExtension('multicomplex')],
     cmdclass=dict(build_ext=CMakeBuild),
     zip_safe=False,

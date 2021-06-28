@@ -46,9 +46,9 @@ attach_includes(catchtests)
 
 if (NOT MULTICOMPLEX_NO_PYTHON)
   # Build pybind11 python module
-  pybind11_add_module(pymcx "${CMAKE_CURRENT_SOURCE_DIR}/interface/pybind11_wrapper.cpp")
-  target_compile_definitions(pymcx PUBLIC -DPYBIND11)
-  attach_includes(pymcx)
+  pybind11_add_module(multicomplex "${CMAKE_CURRENT_SOURCE_DIR}/interface/pybind11_wrapper.cpp")
+  target_compile_definitions(multicomplex PUBLIC -DPYBIND11)
+  attach_includes(multicomplex)
 endif()
 
 if (MULTICOMPLEX_ALL)
