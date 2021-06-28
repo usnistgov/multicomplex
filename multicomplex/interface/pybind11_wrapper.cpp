@@ -19,7 +19,7 @@ void init_MultiComplex(py::module &m){
     m.def("diff_mcx1", py::overload_cast<const tuplefunction&, TN, int, bool>(&diff_mcx1<TN>), 
         py::arg("f"), py::arg("x"), py::arg("numderiv"), py::arg("and_val") = false);
 
-    using mcxFnfunc = std::function<MCD(const std::vector<MultiComplex<double>>&)>;
+    using mcxFnfunc = std::function<MCD(const std::vector<MCD>&)>;
     m.def("diff_mcxN", &diff_mcxN<mcxFnfunc, std::vector<double>>, py::arg("f"), py::arg("x"), py::arg("orders"));
 
     py::class_<MCD>(m, "MultiComplex")

@@ -10,6 +10,9 @@ from setuptools import setup, Extension
 from setuptools.command.build_ext import build_ext
 from distutils.version import LooseVersion
 
+VERSION = '0.10.0'
+with open('multicomplex/__init__.py','w') as fpinit:
+    fpinit.write(f'__version__ = "{VERSION}"')
 
 class CMakeExtension(Extension):
     def __init__(self, name, sourcedir=''):
@@ -58,16 +61,16 @@ class CMakeBuild(build_ext):
         subprocess.check_call(['cmake', '--build', '.'] + build_args, cwd=self.build_temp)
 
 here = os.path.dirname(os.path.abspath(__file__))
-os.chdir(here+'/pymcx')
+os.chdir(here+'/multicomplex')
 
 setup(
-    name='pymcx',
-    version='0.10.0',
+    name='multicomplex',
+    version=VERSION,
     author='Ian Bell, Ulrich Deiters, Bradley Alpert',
     author_email='ian.bell@nist.gov',
     description='Multicomplex algebra in C++ with wrapper in python',
     long_description='',
-    ext_modules=[CMakeExtension('pymcx')],
+    ext_modules=[CMakeExtension('multicomplex')],
     cmdclass=dict(build_ext=CMakeBuild),
     zip_safe=False,
 )
