@@ -12,11 +12,11 @@ jobs:
     - name: checkout submodules
       run: git submodule update --init --recursive
     - name: mkdir
-      run: mkdir -p pymcx/build && cd pymcx/build
+      run: mkdir -p multicomplex/build && cd multicomplex/build
     - name: cmake config
-      run: cd pymcx/build && cmake .. -DCMAKE_BUILD_TYPE=Release -DMULTICOMPLEX_NO_PYTHON=ON
+      run: cd multicomplex/build && cmake .. -DCMAKE_BUILD_TYPE=Release -DMULTICOMPLEX_NO_PYTHON=ON
     - name: cmake make
-      run: cmake --build pymcx/build
+      run: cmake --build multicomplex/build
     # run tests
     - name: run Catch tests
-      run: pymcx/build/catchtests
+      run: multicomplex/build/catchtests
