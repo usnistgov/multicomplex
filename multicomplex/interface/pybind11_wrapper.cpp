@@ -6,21 +6,24 @@
 #include <pybind11/operators.h>
 #include <pybind11/functional.h>
 
+#include "version.hpp"
+
 namespace py = pybind11;
 
 void init_MultiComplex(py::module &m){
     using namespace mcx;
-    using MCD = MultiComplex<double>;
-
     using TN = double;
+    using MCD = MultiComplex<TN>;
+
     m.def("diff_mcx1", py::overload_cast<const std::function<MultiComplex<TN>(const MultiComplex<TN>&)>&, TN, int, bool>(&diff_mcx1<TN>), 
         py::arg("f"), py::arg("x"), py::arg("numderiv"), py::arg("and_val") = false);
+    
     using tuplefunction = std::function<std::tuple<MultiComplex<TN>, MultiComplex<TN>>(const MultiComplex<TN>&)>;
     m.def("diff_mcx1", py::overload_cast<const tuplefunction&, TN, int, bool>(&diff_mcx1<TN>), 
         py::arg("f"), py::arg("x"), py::arg("numderiv"), py::arg("and_val") = false);
 
     using mcxFnfunc = std::function<MCD(const std::vector<MCD>&)>;
-    m.def("diff_mcxN", &diff_mcxN<mcxFnfunc, std::vector<double>>, py::arg("f"), py::arg("x"), py::arg("orders"));
+    m.def("diff_mcxN", &diff_mcxN<mcxFnfunc, std::vector<TN>>, py::arg("f"), py::arg("x"), py::arg("orders"));
 
     py::class_<MCD>(m, "MultiComplex")
         .def(py::init<const std::complex<double> &>())
@@ -71,7 +74,8 @@ void init_MultiComplex(py::module &m){
         ;
 }
 
-PYBIND11_MODULE(pymcx, m) {
+PYBIND11_MODULE(multicomplex, m) {
     m.doc() = " A Python wrapper of C++ library for working with multicomplex mathematics";
+    m.attr("__version__") = VERSION;
     init_MultiComplex(m);
 }

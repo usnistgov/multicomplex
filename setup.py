@@ -11,8 +11,8 @@ from setuptools.command.build_ext import build_ext
 from distutils.version import LooseVersion
 
 VERSION = '0.11.0'
-with open('multicomplex/__init__.py','w') as fpinit:
-    fpinit.write(f'__version__ = "{VERSION}"')
+with open('multicomplex/interface/version.hpp','w') as fpver:
+    fpver.write(f'const std::string VERSION = "{VERSION}";')
 
 here = os.path.dirname(os.path.abspath(__file__))
 
@@ -69,7 +69,6 @@ setup(
     author_email='ian.bell@nist.gov',
     description='Multicomplex algebra in C++ with wrapper in python',
     long_description='',
-    packages=['multicomplex'],
     ext_modules=[CMakeExtension('multicomplex')],
     cmdclass=dict(build_ext=CMakeBuild),
     zip_safe=False,
