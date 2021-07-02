@@ -1,4 +1,3 @@
 #!/bin/bash
 set -ex
-DEBIAN_FRONTEND=noninteractive apt-get install -y cmake clang
 CXX=clang++ pip install git+git://github.com/ianhbell/multicomplex.git
