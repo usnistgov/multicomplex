@@ -13,9 +13,9 @@ Try it in your browser: [![Binder](https://mybinder.org/badge.svg)](https://mybi
 Here is how to calculate the first 10 derivatives of sin(x) to numerical precision:
 
 ``` Python
-import multicomplex as pymcx
+import multicomplex as mcx
 import numpy as np
-derivs = pymcx.diff_mcx1(lambda x: np.sin(x), 0.1234, 10)
+derivs = mcx.diff_mcx1(lambda x: np.sin(x), 0.1234, 10)
 ```
 
 WARNING: Not all functions are implemented, due to the complications of multicomplex algebra.  The following functions are implemented:
