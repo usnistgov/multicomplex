@@ -56,21 +56,21 @@ TEST_CASE("exp(-big)", "[1D]") {
 TEST_CASE("square of negative number", "[ops]") {
     std::complex<double> ee = std::complex<double>(-0.1, 1e-100);
     mcx::MultiComplex<double> mce(ee);
-    CHECK(almost_equal_complex(ee*ee, (mce*mce).complex(), 1e-14, 1e-99));
-    CHECK(almost_equal_complex(ee*ee, (mce.pow(2)).complex(), 1e-14, 1e-99));
-    CHECK(almost_equal_complex(ee*ee, (mce.pow(2.0)).complex(), 1e-14, 1e-99));
-    CHECK(almost_equal_complex(ee*ee, (pow(mce, 2.0)).complex(), 1e-14, 1e-99));
+    CHECK(almost_equal_complex(ee*ee, (mce*mce).complex(), 1e-14, 1e-16));
+    CHECK(almost_equal_complex(ee*ee, (mce.pow(2)).complex(), 1e-14, 1e-16));
+    CHECK(almost_equal_complex(ee*ee, (mce.pow(2.0)).complex(), 1e-14, 1e-16));
+    CHECK(almost_equal_complex(ee*ee, (pow(mce, 2.0)).complex(), 1e-14, 1e-16));
     CHECK_THROWS(mce.pow(2.1));
 }
 
 TEST_CASE("Integer and non-integer powers", "[ops]") {
     std::complex<double> ee = std::complex<double>(0.1, 1e-100);
     mcx::MultiComplex<double> mce(ee);
-    CHECK(almost_equal_complex(ee * ee, (mce * mce).complex(), 1e-14, 1e-99));
-    CHECK(almost_equal_complex(ee * ee, (mce.pow(2)).complex(), 1e-14, 1e-99));
-    CHECK(almost_equal_complex(ee * ee, (mce.pow(2.0)).complex(), 1e-14, 1e-99));
-    CHECK(almost_equal_complex(ee * ee, (pow(mce, 2.0)).complex(), 1e-14, 1e-99));
-    CHECK(almost_equal_complex(pow(ee, 2.1), (mce.pow(2.1)).complex(), 1e-14, 1e-99));
+    CHECK(almost_equal_complex(ee * ee, (mce * mce).complex(), 1e-14, 1e-16));
+    CHECK(almost_equal_complex(ee * ee, (mce.pow(2)).complex(), 1e-14, 1e-16));
+    CHECK(almost_equal_complex(ee * ee, (mce.pow(2.0)).complex(), 1e-14, 1e-16));
+    CHECK(almost_equal_complex(ee * ee, (pow(mce, 2.0)).complex(), 1e-14, 1e-16));
+    CHECK(almost_equal_complex(pow(ee, 2.1), (mce.pow(2.1)).complex(), 1e-14, 1e-16));
 }
 
 TEST_CASE("1/n derivs","[1D]") {
