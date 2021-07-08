@@ -631,7 +631,7 @@ template<typename FuncType, typename PointType>
 auto diff_mcxN(
     const FuncType &f,
     const PointType &x,
-    const std::vector<int> &orders)
+    const std::vector<int> &orders) -> PointType::value_type
 {
     if (x.size() != orders.size()) {
         throw std::invalid_argument(
