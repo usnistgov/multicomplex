@@ -11,6 +11,8 @@ jobs:
       TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
     steps:
       - uses: actions/checkout@v2
+      - name: checkout submodules
+        run: git submodule update --init --recursive
       - name: build and upload manylinux wheels
         uses: Niraj-Kamdar/manylinux-wheel-builder@master
   Matrix-build:
@@ -24,6 +26,8 @@ jobs:
         python-version: [3.6, 3.7, 3.8, 3.9]
     steps:
       - uses: actions/checkout@v2
+      - name: checkout submodules
+        run: git submodule update --init --recursive
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
