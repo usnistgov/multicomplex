@@ -22,5 +22,3 @@ jobs:
       run: cmake --build multicomplex/build --config Release
     - name: run Catch tests
       run: cd multicomplex/build && ctest --verbose
-    - name: Test building of python module 
-      run: python setup.py build
