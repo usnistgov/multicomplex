@@ -628,10 +628,10 @@ struct function_traits<std::function<R(Args...)>>
  @return out The numerical derivative that was obtained.  
  */
 template<typename FuncType, typename PointType>
-auto diff_mcxN(
+typename PointType::value_type diff_mcxN(
     const FuncType &f,
     const PointType &x,
-    const std::vector<int> &orders) -> PointType::value_type
+    const std::vector<int> &orders)
 {
     if (x.size() != orders.size()) {
         throw std::invalid_argument(
