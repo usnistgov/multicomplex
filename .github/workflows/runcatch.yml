@@ -20,6 +20,5 @@ jobs:
       run: cd multicomplex/build && cmake .. -DCMAKE_BUILD_TYPE=Release -DMULTICOMPLEX_NO_PYTHON=ON
     - name: cmake make
       run: cmake --build multicomplex/build --config Release
-    # run tests
     - name: run Catch tests
-      run: multicomplex/build/catchtests
+      run: ctest multicomplex/build
