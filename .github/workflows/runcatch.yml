@@ -21,4 +21,4 @@ jobs:
     - name: cmake make
       run: cmake --build multicomplex/build --config Release
     - name: run Catch tests
-      run: ctest multicomplex/build
+      run: cd multicomplex/build && ctest --verbose

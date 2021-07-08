@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.0)
 project(MULTICOMPLEX)
+enable_testing()
 
 # We heavily use modern C++ features, C++17+ support is required
 set (CMAKE_CXX_STANDARD 17)
@@ -43,7 +44,7 @@ attach_includes(test2)
 
 add_executable(catchtests "${CMAKE_CURRENT_SOURCE_DIR}/src/catch/catch.cxx")
 attach_includes(catchtests)
-add_test(catchtests catchtests)
+add_test(catch catchtests)
 
 if (NOT MULTICOMPLEX_NO_PYTHON)
   # Build pybind11 python module
