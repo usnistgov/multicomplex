@@ -5,10 +5,10 @@ on:
   pull_request:
     branches: [ master ]
 jobs:
-  strategy:
-    matrix:
-      os: [macos-latest, windows-latest, ubuntu-latest]
   build:
+    strategy:
+      matrix:
+        os: [macos-latest, windows-latest, ubuntu-latest]
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v2
