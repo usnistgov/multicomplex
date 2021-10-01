@@ -41,6 +41,81 @@ inline double increment(std::size_t l) {
     return exp2(-664 / static_cast<int>(l));
 }
 
+// Scalar versions of math functions that help 
+// the compiler with overload resolution
+template<typename T>
+T scalar_log(const T& x) {
+    if constexpr (std::is_floating_point<T>::value) {
+        // base is a number (float, double, long double)
+        return std::log(x);
+    }
+    else {
+        // This is something more interesting
+        return log(x);
+    }
+}
+template<typename T>
+T scalar_exp(const T &x) {
+    if constexpr (std::is_floating_point<T>::value) {
+        return std::exp(x);
+    }
+    else {
+        // This is something more interesting
+        return exp(x);
+    }
+}
+template<typename T>
+T scalar_cos(const T &x) {
+    if constexpr (std::is_floating_point<T>::value) {
+        return std::cos(x);
+    }
+    else {
+        // This is something more interesting
+        return cos(x);
+    }
+}
+template<typename T>
+T scalar_sin(const T &x){
+    if constexpr (std::is_floating_point<T>::value) {
+        return std::sin(x);
+    }
+    else {
+        // This is something more interesting
+        return sin(x);
+    }
+}
+template<typename T>
+T scalar_cosh(const T& x) {
+    if constexpr (std::is_floating_point<T>::value) {
+        return std::cosh(x);
+    }
+    else {
+        // This is something more interesting
+        return cosh(x);
+    }
+}
+template<typename T>
+T scalar_sinh(const T& x) {
+    if constexpr (std::is_floating_point<T>::value) {
+        return std::sinh(x);
+    }
+    else {
+        // This is something more interesting
+        return sinh(x);
+    }
+}
+template<typename TN>
+TN scalar_pow(TN& x, int e) {
+    if constexpr (std::is_floating_point<TN>::value) {
+        // base is a number (float, double, long double)
+        return std::pow(x, e);
+    }
+    else {
+        // This is something more interesting
+        return pow(x, e);
+    }
+}
+
 template<typename T >
 struct MultiComplex
 {
@@ -151,7 +226,7 @@ struct MultiComplex
     }
 
     template<typename VEC>
-    static void _times(const VEC& z, std::size_t iz, const VEC& w, std::size_t iw, VEC& p, std::size_t ip, std::size_t L, int sign) {
+    void _times(const VEC& z, std::size_t iz, const VEC& w, std::size_t iw, VEC& p, std::size_t ip, std::size_t L, int sign) const{
         if (L == 2) {
             p[ip] += sign * (z[iz] * w[iw] - z[iz + 1] * w[iw + 1]);
             p[ip + 1] += sign * (z[iz] * w[iw + 1] + z[iz + 1] * w[iw]);
@@ -200,17 +275,17 @@ struct MultiComplex
     }
 
     template<typename VEC>
-    static void _cossin(
+    void _cossin(
         const VEC& d, std::size_t id, VEC& c, std::size_t ic, VEC& s, std::size_t is,
         VEC& w1, std::size_t i1, VEC& w2, std::size_t i2,
         VEC& w3, std::size_t i3, VEC& w4, std::size_t i4,
-        std::size_t L)
+        std::size_t L) const
     {
         if (L == 2) {
             // In order to avoid duplicate calculations (maybe compiler would 
             // optimize this away, but not clear), pre-calculate the values
-            T coshdp1 = ::cosh(d[id + 1]), sinhdp1 = ::sinh(d[id + 1]);
-            T cosd = ::cos(d[id]), sind = ::sin(d[id]);
+            T coshdp1 = cosh(d[id + 1]), sinhdp1 = sinh(d[id + 1]);
+            T cosd = cos(d[id]), sind = sin(d[id]);
             c[ic] = cosd * coshdp1;
             c[ic + 1] = -sind * sinhdp1;
             s[is] = sind * coshdp1;
@@ -228,18 +303,18 @@ struct MultiComplex
     }
 
     template<typename VEC>
-    static void _coshsinh(
+    void _coshsinh(
         const VEC& d, std::size_t id,
         VEC& c, std::size_t ic, VEC& s, std::size_t is,
         VEC& w1, std::size_t i1, VEC& w2, std::size_t i2,
         VEC& w3, std::size_t i3, VEC& w4, std::size_t i4,
-        std::size_t L)
+        std::size_t L) const
     {
         if (L == 2) {
             // In order to avoid duplicate calculations (maybe compiler would 
             // optimize this away, but not clear), pre-calculate the values
-            T cosdp1 = ::cos(d[id + 1]), sindp1 = ::sin(d[id + 1]);
-            T coshd = ::cosh(d[id]), sinhd = ::sinh(d[id]);
+            T cosdp1 = cos(d[id + 1]), sindp1 = sin(d[id + 1]);
+            T coshd = cosh(d[id]), sinhd = sinh(d[id]);
             c[ic] = coshd * cosdp1;
             c[ic + 1] = sinhd * sindp1;
             s[is] = sinhd * cosdp1;
@@ -257,34 +332,34 @@ struct MultiComplex
     }
 
     template<typename VEC>
-    static auto cossin(const VEC& d) {
+    auto cossin(const VEC& d) const {
         VEC w1, w2, w3;
         std::size_t L = d.size(), L2 = L / 2;
-        std::tie(w1, w2, w3) = walloc<double>(L);
+        std::tie(w1, w2, w3) = walloc<T>(L);
         _cossin(d, 0, w1, 0, w2, 0, w3, 0, w3, 0 + L2, w3, 0 + 2 * L2, w3, 0 + 3 * L2, L);
         return std::make_tuple(w1, w2);
     }
 
     template<typename VEC>
-    static auto coshsinh(const VEC& d) {
+    auto coshsinh(const VEC& d) const {
         VEC w1, w2, w3;
         std::size_t L = d.size(), L2 = L / 2;
-        std::tie(w1, w2, w3) = walloc<double>(L);
+        std::tie(w1, w2, w3) = walloc<T>(L);
         _coshsinh(d, 0, w1, 0, w2, 0, w3, 0, w3, 0 + L2, w3, 0 + 2 * L2, w3, 0 + 3 * L2, L);
         return std::make_tuple(w1, w2);
     }
 
     template<typename VEC>
-    static void _exp(
+    void _exp(
         const VEC& d, std::size_t id,
         VEC& e, std::size_t ie, 
         VEC& w1, std::size_t i1,
-        std::size_t L)
+        std::size_t L) const
     {
         if (L == 2) {
-            T expd = ::exp(d[id]);
-            e[ie] = expd * ::cos(d[id + 1]);
-            e[ie + 1] = expd * ::sin(d[id + 1]);
+            T expd = exp(d[id]);
+            e[ie] = expd * cos(d[id + 1]);
+            e[ie + 1] = expd * sin(d[id + 1]);
             return;
         }
         std::size_t L2 = L / 2;
@@ -304,6 +379,49 @@ struct MultiComplex
         _exp(coef, 0, w1, 0, w2, 0, L);
         return w1;
     }
+    T exp(T x) const { return scalar_exp(x); }
+
+    MultiComplex cos() const {
+        if (dim() == 1) {
+            return std::cos(complex());
+        }
+        else {
+            return std::get<0>(cossin(get_coef()));
+        }
+    }
+    T cos(T x) const { return scalar_cos(x); }
+    
+    
+    MultiComplex sin() const {
+        if (dim() == 1) {
+            return std::sin(complex());
+        }
+        else {
+            return std::get<1>(cossin(get_coef()));
+        }
+    }
+    T sin(T x) const { return scalar_sin(x); }
+    
+
+    MultiComplex cosh() const {
+        if (dim() == 1) {
+            return std::cosh(complex());
+        }
+        else {
+            return std::get<0>(coshsinh(get_coef()));
+        }
+    }
+    T cosh(T x) const { return scalar_cosh(x); }
+
+    MultiComplex sinh() const {
+        if (dim() == 1) {
+            return std::sinh(complex());
+        }
+        else {
+            return std::get<1>(coshsinh(get_coef()));
+        }
+    }
+    T sinh(T x) const { return scalar_sinh(x); }
 
     MultiComplex conj() const {
         std::valarray<T> new_coef = coef;
@@ -467,28 +585,23 @@ const MultiComplex<TN> operator/(const TN value, const MultiComplex<TN>& mc) {
 
 template<typename TN>
 MultiComplex<TN> cos(const MultiComplex<TN>& z) {
-    return (z.dim() == 1) ? std::cos(z.complex()) : MultiComplex<TN>(std::get<0>(MultiComplex<TN>::cossin(z.get_coef())));
+    return z.cos();
 }
 template<typename TN>
 MultiComplex<TN> sin(const MultiComplex<TN>& z) {
-    return (z.dim() == 1) ? std::sin(z.complex()) : MultiComplex<TN>(std::get<1>(MultiComplex<TN>::cossin(z.get_coef())));
+    return z.sin();
 }
 template<typename TN>
 MultiComplex<TN> cosh(const MultiComplex<TN>& z) {
-    return (z.dim() == 1) ? std::cosh(z.complex()) : MultiComplex<TN>(std::get<0>(MultiComplex<TN>::coshsinh(z.get_coef())));
+    return z.cosh();
 }
 template<typename TN>
 MultiComplex<TN> sinh(const MultiComplex<TN>& z) {
-    return (z.dim() == 1) ? std::sinh(z.complex()) : MultiComplex<TN>(std::get<1>(MultiComplex<TN>::coshsinh(z.get_coef())));
+    return z.sinh();
 }
 template<typename TN>
 MultiComplex<TN> exp(const MultiComplex<TN>& z) {
-    if (z.dim() == 1) {
-        return std::exp(z.complex());
-    }
-    else {
-        return z.exp();
-    }
+    return z.exp();
 }
 
 template<typename TN>
@@ -496,7 +609,7 @@ MultiComplex<TN> log(const MultiComplex<TN>& z) {
     // Normally we would like to short-circuit for normal complex number, but can't here
     // because of the possible branch-cuts
     TN re = z[0], re_old = z[0];
-    MultiComplex<TN> y = ::log(z[0]); // Start off with the most-real component
+    MultiComplex<TN> y = scalar_log(re); // Start off with the most-real component
     MultiComplex<TN> expny = exp(-y);
     for (auto counter = 0; counter <= 6; ++counter) {
         y = y - 2.0 * (1.0 - z * expny) / (1.0 + z * expny);
@@ -558,7 +671,7 @@ std::vector<TN> diff_mcx1(const std::function<MultiComplex<TN>(const MultiComple
     for (auto L = 1; L <= numderiv; ++L) {
         // The calculated value is sitting in the 2^L-1 index,
         // and then need to divide by DELTA^L
-        ders.push_back(o[int(exp2i(L) - 1)] / ::pow(DELTA, L));
+        ders.push_back(o[int(exp2i(L) - 1)] / scalar_pow(DELTA, L));
     }
     return ders;
 }
@@ -603,8 +716,8 @@ std::tuple<std::vector<TN>, std::vector<TN>> diff_mcx1(
     for (auto L = 1; L <= numderiv; ++L) {
         // The calculated value is sitting in the 2^L-1 index,
         // and then need to divide by DELTA^L
-        ders.push_back(o[int(exp2i(L) - 1)] / ::pow(DELTA, L));
-        errs.push_back(e[int(exp2i(L) - 1)] / ::pow(DELTA, L));
+        ders.push_back(o[int(exp2i(L) - 1)] / scalar_pow(DELTA, L));
+        errs.push_back(e[int(exp2i(L) - 1)] / scalar_pow(DELTA, L));
     }
     return std::make_tuple(ders,errs);
 }
