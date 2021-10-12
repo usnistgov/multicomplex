@@ -131,13 +131,6 @@ struct MultiComplex
     // This is a "normal" complex number, stored as such 
     MultiComplex(const std::complex<T>& c) : m_d(1) { coef = { c.real(), c.imag() }; };
 
-    /// This is a multicomplex complex number (re+i1*im), with two children,
-    /// the left child is the "real" part (itself a multicomplex number), 
-    /// and the right child is the "imaginary" part (itself a multicomplex number)
-    //MultiComplex(const MultiComplex<T>& re, const MultiComplex<T>& im, int d = 2) : m_d(d) { children.push_back(re); children.push_back(im);  };
-
-    //MultiComplex(const MultiComplex<T>&& re, const MultiComplex<T>&& im, int d = 2) : m_d(d) { children.emplace_back(std::move(re)); children.emplace_back(std::move(im)); move++;  };
-
     /// Constructor in which a vector of values are provided
     /// These are the values of the terminals, and the length of the values will be 2^d, 
     /// where d is the dimension (or level) of the MultiComplex object
