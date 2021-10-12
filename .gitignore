@@ -1,2 +1,6 @@
 /mc/bld2
 /multicomplex/__init__.py
+/bld
+/multicomplex/boost_multiprecision
+
+multicomplex/interface/version.hpp
