@@ -126,7 +126,7 @@ struct MultiComplex
     MultiComplex() : m_d(0) { coef = {}; };
 
     /// This is a "normal" real number (re+i*0), stored as a complex number
-    MultiComplex(const T re) : m_d(1) { coef = { re, 0 }; };
+    MultiComplex(const T& re) : m_d(1) { coef = { re, 0 }; };
 
     // This is a "normal" complex number, stored as such 
     MultiComplex(const std::complex<T>& c) : m_d(1) { coef = { c.real(), c.imag() }; };
