@@ -280,8 +280,8 @@ struct MultiComplex
         if (L == 2) {
             // In order to avoid duplicate calculations (maybe compiler would 
             // optimize this away, but not clear), pre-calculate the values
-            T coshdp1 = cosh(d[id + 1]), sinhdp1 = sinh(d[id + 1]);
-            T cosd = cos(d[id]), sind = sin(d[id]);
+            T coshdp1 = scalar_cosh(d[id + 1]), sinhdp1 = scalar_sinh(d[id + 1]);
+            T cosd = scalar_cos(d[id]), sind = scalar_sin(d[id]);
             c[ic] = cosd * coshdp1;
             c[ic + 1] = -sind * sinhdp1;
             s[is] = sind * coshdp1;
@@ -309,8 +309,8 @@ struct MultiComplex
         if (L == 2) {
             // In order to avoid duplicate calculations (maybe compiler would 
             // optimize this away, but not clear), pre-calculate the values
-            T cosdp1 = cos(d[id + 1]), sindp1 = sin(d[id + 1]);
-            T coshd = cosh(d[id]), sinhd = sinh(d[id]);
+            T cosdp1 = scalar_cos(d[id + 1]), sindp1 = scalar_sin(d[id + 1]);
+            T coshd = scalar_cosh(d[id]), sinhd = scalar_sinh(d[id]);
             c[ic] = coshd * cosdp1;
             c[ic + 1] = sinhd * sindp1;
             s[is] = sinhd * cosdp1;
@@ -353,9 +353,9 @@ struct MultiComplex
         std::size_t L) const
     {
         if (L == 2) {
-            T expd = exp(d[id]);
-            e[ie] = expd * cos(d[id + 1]);
-            e[ie + 1] = expd * sin(d[id + 1]);
+            T expd = scalar_exp(d[id]);
+            e[ie] = expd * scalar_cos(d[id + 1]);
+            e[ie + 1] = expd * scalar_sin(d[id + 1]);
             return;
         }
         std::size_t L2 = L / 2;
@@ -783,7 +783,7 @@ typename PointType::value_type diff_mcxN(
     // Call the function with our multicomplex arguments
     auto o = f(zs);
     // Return the desired derivative
-    return o[exp2i(numderiv)-1]/::pow(DELTA, numderiv);
+    return o[exp2i(numderiv)-1]/scalar_pow(DELTA, numderiv);
 }
 
 namespace detail{
