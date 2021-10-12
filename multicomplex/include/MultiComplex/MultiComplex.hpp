@@ -183,7 +183,7 @@ struct MultiComplex
     const MultiComplex operator*(T r) const {
         return MultiComplex<T>(coef*r);
     }
-    /// Right division by a float (this*r)
+    /// Right division by a float (this/r)
     const MultiComplex operator/(T r) const {
         return MultiComplex<T>(coef/r);
     }
