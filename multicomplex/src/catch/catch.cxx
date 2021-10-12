@@ -34,6 +34,8 @@ TEST_CASE("log2i", "[log2i]") {
     CHECK(mcx::log2i(1) == 0);
     CHECK(mcx::log2i(2) == 1);
     CHECK(mcx::log2i(4) == 2);
+    CHECK(mcx::log2i(8) == 3);
+    CHECK(mcx::log2i(16) == 4);
     CHECK_THROWS(mcx::log2i(7));
 }
 
@@ -73,14 +75,14 @@ TEST_CASE("Integer and non-integer powers", "[ops]") {
     CHECK(almost_equal_complex(pow(ee, 2.1), (mce.pow(2.1)).complex(), 1e-14, 1e-16));
 }
 
-TEST_CASE("1/n derivs","[1D]") {
+TEST_CASE("1/x derivs","[1D]") {
     typedef std::function<mcx::MultiComplex<double>(const mcx::MultiComplex<double>&)> fcn_t;
     fcn_t ff = [](const mcx::MultiComplex<double>& z) {
         return 1.0 / z;
     };
     double x = 0.1234; 
-    int numderiv = 6;
-    auto fo = mcx::diff_mcx1(ff, x, numderiv);
+    int numderiv = 4;
+    auto fo = mcx::diff_mcx1(ff, x, numderiv, false /* and_val */);
     std::vector<double> exacts;
     auto factorial = [](int n) {
         return std::tgamma(n + 1);

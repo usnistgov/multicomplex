@@ -28,17 +28,20 @@ inline int exp2i(int i) {
 }
 
 /// Log2i, where i is an integer
-/// Could still be more optimized if needed
-inline int log2i(int i) {
-    int val = int(log2(i));
-    if (exp2i(val) != i) {
-        throw std::invalid_argument("The argument to log2i " + std::to_string(i) + " is not a power of 2");
+/// find the exponent j that yields 2^j = i if possible
+inline int log2i(unsigned int i) {
+    unsigned int counter = 0; // How many times you need to multiply by 2...
+    for (unsigned int j = 1; j <= i; j *= 2) {
+        if (j == i) {
+            return counter;
+        }
+        counter++;
     }
-    return val;
+    throw std::invalid_argument("The argument to log2i " + std::to_string(i) + " is not a power of 2");
 }
 
 inline double increment(std::size_t l) {
-    return exp2(-664 / static_cast<int>(l));
+    return ldexp(1.0, -664 / static_cast<int>(l));
 }
 
 // Scalar versions of math functions that help 
