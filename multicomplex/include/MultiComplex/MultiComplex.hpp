@@ -146,8 +146,8 @@ struct MultiComplex
         m_d = log2i(static_cast<int>(v.size()));
     }
     MultiComplex(const std::valarray<T>&& v) {
+        m_d = log2i(static_cast<int>(v.size())); 
         coef = std::move(v);
-        m_d = log2i(static_cast<int>(v.size()));
     }
 
     /// The dimension of the multicomplex number
