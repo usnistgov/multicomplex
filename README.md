@@ -4,11 +4,11 @@
 
 At its core is a minimal header-only C++11 library that does the heavy lifting, and pybind11 is used to make a 1-to-1 interface between the C++ code and the Python interface
 
-[![build and run Catch tests](https://github.com/ianhbell/multicomplex/actions/workflows/runcatch.yml/badge.svg)](https://github.com/ianhbell/multicomplex/actions/workflows/runcatch.yml)
+[![build and run Catch tests](https://github.com/usnistgov/multicomplex/actions/workflows/runcatch.yml/badge.svg)](https://github.com/usnistgov/multicomplex/actions/workflows/runcatch.yml)
 
 ## Examples:
 
-Try it in your browser: [![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/ianhbell/multicomplex/master)
+Try it in your browser: [![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/usnistgov/multicomplex/master)
 
 Here is how to calculate the first 10 derivatives of sin(x) to numerical precision:
 
