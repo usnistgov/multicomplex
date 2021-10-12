@@ -677,6 +677,8 @@ std::vector<TN> diff_mcx1(const std::function<MultiComplex<TN>(const MultiComple
  @param numderiv The maximum number of derivatives to take.  The larger this number the more computational effort required
  @parma and_val Also return the function value in slot 0
  @return out The vector of numerical derivatives that were obtained.  The first entry is the first derivative, the second is the second derivative, and so on
+
+ This function was written in particular to take derivatives of integrands for which the value is associated with an error estimate
  */
 template<typename TN>
 std::tuple<std::vector<TN>, std::vector<TN>> diff_mcx1(
