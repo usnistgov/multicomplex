@@ -29,6 +29,7 @@ inline int exp2i(int i) {
 
 /// Log2i, where i is an integer
 /// find the exponent j that yields 2^j = i if possible
+/// This call could be further optimized in a non-portable way: https://stackoverflow.com/questions/671815/what-is-the-fastest-most-efficient-way-to-find-the-highest-set-bit-msb-in-an-i
 inline int log2i(unsigned int i) {
     unsigned int counter = 0; // How many times you need to multiply by 2...
     for (unsigned int j = 1; j <= i; j *= 2) {
