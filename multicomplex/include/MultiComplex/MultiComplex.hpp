@@ -142,7 +142,7 @@ struct MultiComplex
         coef = v;
         m_d = log2i(static_cast<int>(v.size()));
     }
-    MultiComplex(const std::valarray<T>&& v) {
+    MultiComplex(std::valarray<T>&& v) {
         m_d = log2i(static_cast<int>(v.size())); 
         coef = std::move(v);
     }
@@ -164,7 +164,7 @@ struct MultiComplex
 
     /// Unary negation parameter (-this)
     const MultiComplex operator-() const {
-        return -coef;
+        return std::move(-1*coef);
     }
     /// Right addition by a float (this+r)
     const MultiComplex operator+(T r) const {
