@@ -10,7 +10,7 @@ from setuptools import setup, Extension
 from setuptools.command.build_ext import build_ext
 from distutils.version import LooseVersion
 
-VERSION = '0.12.0'
+VERSION = '0.13.0'
 with open('multicomplex/interface/version.hpp','w') as fpver:
     fpver.write(f'const std::string VERSION = "{VERSION}";')
 
