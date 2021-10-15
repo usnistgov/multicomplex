@@ -39,9 +39,6 @@ set(snippet_exe "main")
 add_executable(${snippet_exe} ${snippet})
 attach_includes(${snippet_exe})
 
-add_executable(test2 "${CMAKE_CURRENT_SOURCE_DIR}/src/test.cpp")
-attach_includes(test2)
-
 add_executable(catchtests "${CMAKE_CURRENT_SOURCE_DIR}/src/catch/catch.cxx")
 attach_includes(catchtests)
 add_test(catch catchtests)
