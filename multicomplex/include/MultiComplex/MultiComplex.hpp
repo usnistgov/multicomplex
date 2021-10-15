@@ -164,7 +164,7 @@ struct MultiComplex
 
     /// Unary negation parameter (-this)
     const MultiComplex operator-() const {
-        return std::move(-coef);
+        return -coef;
     }
     /// Right addition by a float (this+r)
     const MultiComplex operator+(T r) const {
