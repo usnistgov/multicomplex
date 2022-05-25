@@ -47,67 +47,13 @@ inline double increment(std::size_t l) {
 
 // Scalar versions of math functions that help 
 // the compiler with overload resolution
-template<typename T>
-T scalar_log(const T& x) {
-    if constexpr (std::is_floating_point<T>::value) {
-        // base is a number (float, double, long double)
-        return std::log(x);
-    }
-    else {
-        // This is something more interesting
-        return log(x);
-    }
-}
-template<typename T>
-T scalar_exp(const T &x) {
-    if constexpr (std::is_floating_point<T>::value) {
-        return std::exp(x);
-    }
-    else {
-        // This is something more interesting
-        return exp(x);
-    }
-}
-template<typename T>
-T scalar_cos(const T &x) {
-    if constexpr (std::is_floating_point<T>::value) {
-        return std::cos(x);
-    }
-    else {
-        // This is something more interesting
-        return cos(x);
-    }
-}
-template<typename T>
-T scalar_sin(const T &x){
-    if constexpr (std::is_floating_point<T>::value) {
-        return std::sin(x);
-    }
-    else {
-        // This is something more interesting
-        return sin(x);
-    }
-}
-template<typename T>
-T scalar_cosh(const T& x) {
-    if constexpr (std::is_floating_point<T>::value) {
-        return std::cosh(x);
-    }
-    else {
-        // This is something more interesting
-        return cosh(x);
-    }
-}
-template<typename T>
-T scalar_sinh(const T& x) {
-    if constexpr (std::is_floating_point<T>::value) {
-        return std::sinh(x);
-    }
-    else {
-        // This is something more interesting
-        return sinh(x);
-    }
-}
+template<typename T> inline auto scalar_cosh(const T& x) { if constexpr (std::is_arithmetic_v<T>) { return ::cosh(x) } else { return cosh(x); } };
+template<typename T> inline auto scalar_sinh(const T& x) { if constexpr (std::is_arithmetic_v<T>) { return ::sinh(x) } else { return sinh(x); } };
+template<typename T> inline auto scalar_cos(const T& x) { if constexpr (std::is_arithmetic_v<T>) { return ::cos(x) } else { return cos(x); } };
+template<typename T> inline auto scalar_sin(const T& x) { if constexpr (std::is_arithmetic_v<T>) { return ::sin(x) } else { return sin(x); } };
+template<typename T> inline auto scalar_exp(const T& x) { if constexpr (std::is_arithmetic_v<T>) { return ::exp(x) } else { return exp(x); } };
+template<typename T> inline auto scalar_log(const T& x) { if constexpr (std::is_arithmetic_v<T>) { return ::log(x) } else { return log(x); } };
+template<typename T> inline auto scalar_abs(const T& x) { if constexpr (std::is_arithmetic_v<T>) { return ::abs(x) } else { return abs(x); } };
 template<typename TN>
 TN scalar_pow(TN& x, int e) {
     if constexpr (std::is_floating_point<TN>::value) {
@@ -130,7 +76,7 @@ struct MultiComplex
     MultiComplex() : m_d(0) { coef = {}; };
 
     /// This is a "normal" real number (re+i*0), stored as a complex number
-    MultiComplex(const T& re) : m_d(1) { coef = { re, 0 }; };
+    MultiComplex(const T& re) : m_d(1) { coef.resize(2); coef[0] = re, coef[1] = 0; };
 
     // This is a "normal" complex number, stored as such 
     MultiComplex(const std::complex<T>& c) : m_d(1) { coef = { c.real(), c.imag() }; };
@@ -152,7 +98,7 @@ struct MultiComplex
 
     /// The "most real" component; infinity if not initialized yet
     T real() const {
-        return (m_d > 0) ? coef[0] : std::numeric_limits<double>::infinity();
+        return (m_d > 0) ? coef[0] : std::numeric_limits<T>::infinity();
     }
 
     std::complex<T> complex() const {
@@ -168,12 +114,12 @@ struct MultiComplex
     }
     /// Right addition by a float (this+r)
     const MultiComplex operator+(T r) const {
-        std::valarray<double> new_coef = coef; new_coef[0] += r;
+        std::valarray<T> new_coef = coef; new_coef[0] += r;
         return new_coef;
     }
     /// Right subtraction by a float (this-r)
     const MultiComplex operator-(T r) const {
-        std::valarray<double> new_coef = coef; new_coef[0] -= r;
+        std::valarray<T> new_coef = coef; new_coef[0] -= r;
         return new_coef;
     }
     /// Right multiplication by a float (this*r)
@@ -560,23 +506,23 @@ struct MultiComplex
 };
 
 /// Helper function that allows for pre-addition by calling the postfix function
-template <typename TN>
-MultiComplex<TN> operator+(TN value, const MultiComplex<TN>& mc) {
+template <typename TN, typename TOther>
+MultiComplex<TN> operator+(TOther value, const MultiComplex<TN>& mc) {
     return mc + value;
 };
 /// Helper function that allows for pre-multiplication by calling the postfix function
-template <typename TN>
-MultiComplex<TN> operator*(TN value, const MultiComplex<TN>& mc) {
+template <typename TN, typename TOther>
+MultiComplex<TN> operator*(TOther value, const MultiComplex<TN>& mc) {
     return mc * value;
 };
 /// Helper function that allows for pre-subtraction by calling the postfix function
-template <typename TN>
-const MultiComplex<TN> operator-(const TN value, const MultiComplex<TN>& mc) {
+template <typename TN, typename TOther>
+const MultiComplex<TN> operator-(const TOther value, const MultiComplex<TN>& mc) {
     return -(mc - value);
 };
 /// Helper function that allows for pre-division by calling the postfix function
-template <typename TN>
-const MultiComplex<TN> operator/(const TN value, const MultiComplex<TN>& mc) {
+template <typename TN, typename TOther>
+const MultiComplex<TN> operator/(const TOther value, const MultiComplex<TN>& mc) {
     return value * mc.multinv();
 };
 
@@ -613,7 +559,7 @@ MultiComplex<TN> log(const MultiComplex<TN>& z) {
         expny = exp(-y);
         re = y[0];
         TN diff = re - re_old; re_old = re;
-        if (std::abs(diff) < 1e-15 && counter > 0){
+        if (scalar_abs(diff) < 1e-15 && counter > 0){
             break;
         }
     }
