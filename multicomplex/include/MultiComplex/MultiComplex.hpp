@@ -47,13 +47,13 @@ inline double increment(std::size_t l) {
 
 // Scalar versions of math functions that help 
 // the compiler with overload resolution
-template<typename T> inline auto scalar_cosh(const T& x) { if constexpr (std::is_arithmetic_v<T>) { return ::cosh(x) } else { return cosh(x); } };
-template<typename T> inline auto scalar_sinh(const T& x) { if constexpr (std::is_arithmetic_v<T>) { return ::sinh(x) } else { return sinh(x); } };
-template<typename T> inline auto scalar_cos(const T& x) { if constexpr (std::is_arithmetic_v<T>) { return ::cos(x) } else { return cos(x); } };
-template<typename T> inline auto scalar_sin(const T& x) { if constexpr (std::is_arithmetic_v<T>) { return ::sin(x) } else { return sin(x); } };
-template<typename T> inline auto scalar_exp(const T& x) { if constexpr (std::is_arithmetic_v<T>) { return ::exp(x) } else { return exp(x); } };
-template<typename T> inline auto scalar_log(const T& x) { if constexpr (std::is_arithmetic_v<T>) { return ::log(x) } else { return log(x); } };
-template<typename T> inline auto scalar_abs(const T& x) { if constexpr (std::is_arithmetic_v<T>) { return ::abs(x) } else { return abs(x); } };
+template<typename T> inline auto scalar_cosh(const T& x) { if constexpr (std::is_arithmetic_v<T>) { return ::cosh(x); } else { return cosh(x); } };
+template<typename T> inline auto scalar_sinh(const T& x) { if constexpr (std::is_arithmetic_v<T>) { return ::sinh(x); } else { return sinh(x); } };
+template<typename T> inline auto scalar_cos(const T& x) { if constexpr (std::is_arithmetic_v<T>) { return ::cos(x); } else { return cos(x); } };
+template<typename T> inline auto scalar_sin(const T& x) { if constexpr (std::is_arithmetic_v<T>) { return ::sin(x); } else { return sin(x); } };
+template<typename T> inline auto scalar_exp(const T& x) { if constexpr (std::is_arithmetic_v<T>) { return ::exp(x); } else { return exp(x); } };
+template<typename T> inline auto scalar_log(const T& x) { if constexpr (std::is_arithmetic_v<T>) { return ::log(x); } else { return log(x); } };
+template<typename T> inline auto scalar_abs(const T& x) { if constexpr (std::is_arithmetic_v<T>) { return ::abs(x); } else { return abs(x); } };
 template<typename TN>
 TN scalar_pow(TN& x, int e) {
     if constexpr (std::is_floating_point<TN>::value) {
