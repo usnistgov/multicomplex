@@ -16,6 +16,8 @@
 #ifdef __has_include                                           // Check if __has_include is present
 #if __has_include(<boost/multiprecision/cpp_bin_float.hpp>)  // Check for presence of boost/multiprecision
 #define  BOOST_MULTIPRECISION_FOUND
+#include "boost/multiprecision/cpp_bin_float.hpp"
+#include "boost/multiprecision/cpp_complex.hpp"
 #endif
 #endif
 
