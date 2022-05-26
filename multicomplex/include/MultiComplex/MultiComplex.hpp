@@ -61,7 +61,7 @@ template<typename T> inline auto scalar_cos(const T& x) { if constexpr (std::is_
 template<typename T> inline auto scalar_sin(const T& x) { if constexpr (std::is_arithmetic_v<T>) { return ::sin(x); } else { return sin(x); } };
 template<typename T> inline auto scalar_exp(const T& x) { if constexpr (std::is_arithmetic_v<T>) { return ::exp(x); } else { return exp(x); } };
 template<typename T> inline auto scalar_log(const T& x) { if constexpr (std::is_arithmetic_v<T>) { return ::log(x); } else { return log(x); } };
-template<typename T> inline auto scalar_abs(const T& x) { if constexpr (std::is_arithmetic_v<T>) { return ::abs(x); } else { return abs(x); } };
+template<typename T> inline auto scalar_abs(const T& x) { if constexpr (std::is_arithmetic_v<T>) { return std::abs(x); } else { return abs(x); } };
 template<typename TN>
 TN scalar_pow(const TN& x, int e) {
     if constexpr (std::is_floating_point<TN>::value) {
@@ -528,24 +528,34 @@ struct MultiComplex
     };
 };
 
-/// Helper function that allows for pre-addition by calling the postfix function
-template <typename TN>
-MultiComplex<TN> operator+(TN value, const MultiComplex<TN>& mc) {
+/// See https://stackoverflow.com/a/14294277/1360263 for description of type limiting
+/// Helper function that allows for pre-addition by calling the postfix function for numerical types
+template <
+    typename TN, typename T,
+    typename = typename std::enable_if<std::is_arithmetic<T>::value, T>::type
+>
+MultiComplex<TN> operator+(T value, const MultiComplex<TN>& mc) {
     return mc + value;
 };
-/// Helper function that allows for pre-multiplication by calling the postfix function
-template <typename TN>
-MultiComplex<TN> operator*(TN value, const MultiComplex<TN>& mc) {
+/// Helper function that allows for pre-multiplication by calling the postfix function for numerical types
+template <
+    typename TN, typename T,
+    typename = typename std::enable_if<std::is_arithmetic<T>::value, T>::type>
+MultiComplex<TN> operator*(T value, const MultiComplex<TN>& mc) {
     return mc * value;
 };
-/// Helper function that allows for pre-subtraction by calling the postfix function
-template <typename TN>
-const MultiComplex<TN> operator-(const TN value, const MultiComplex<TN>& mc) {
+/// Helper function that allows for pre-subtraction by calling the postfix function for numerical types
+template <
+    typename TN, typename T,
+    typename = typename std::enable_if<std::is_arithmetic<T>::value, T>::type>
+const MultiComplex<TN> operator-(const T value, const MultiComplex<TN>& mc) {
     return -(mc - value);
 };
-/// Helper function that allows for pre-division by calling the postfix function
-template <typename TN>
-const MultiComplex<TN> operator/(const TN value, const MultiComplex<TN>& mc) {
+/// Helper function that allows for pre-division by calling the postfix function for numerical types
+template <
+    typename TN, typename T,
+    typename = typename std::enable_if<std::is_arithmetic<T>::value, T>::type>
+const MultiComplex<TN> operator/(const T value, const MultiComplex<TN>& mc) {
     return value * mc.multinv();
 };
 
