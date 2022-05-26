@@ -528,6 +528,24 @@ struct MultiComplex
     };
 };
 
+// Specializations of the common_type template to allow for use in std::common_type_t
+namespace std {
+  template<typename T>
+  struct common_type<double, mcx::MultiComplex<T>> {
+    using type = mcx::MultiComplex<T>;
+  };
+
+  template<typename T>
+  struct common_type<int, mcx::MultiComplex<T>> {
+    using type = mcx::MultiComplex<T>;
+  };
+
+  template<typename T, typename T2>
+  struct common_type<std::complex<T2>, mcx::MultiComplex<T>> {
+    using type = mcx::MultiComplex<T>;
+  };
+} 
+
 // A type trait to define acceptable numerical types in the prefix operator functions
 template<typename T> struct is_acceptable_number : public std::false_type {};
 template<> struct is_acceptable_number<int> : public std::true_type {};
