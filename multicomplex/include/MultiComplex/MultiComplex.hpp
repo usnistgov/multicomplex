@@ -12,6 +12,7 @@
 #include <functional>
 #include <numeric>
 #include <cmath>
+#include <type_traits>
 
 #ifdef __has_include                                           // Check if __has_include is present
 #if __has_include(<boost/multiprecision/cpp_bin_float.hpp>)  // Check for presence of boost/multiprecision
