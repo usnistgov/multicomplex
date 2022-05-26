@@ -529,23 +529,23 @@ struct MultiComplex
 };
 
 /// Helper function that allows for pre-addition by calling the postfix function
-template <typename TN, typename TOther>
-MultiComplex<TN> operator+(TOther value, const MultiComplex<TN>& mc) {
+template <typename TN>
+MultiComplex<TN> operator+(MultiComplex<TN> value, const MultiComplex<TN>& mc) {
     return mc + value;
 };
 /// Helper function that allows for pre-multiplication by calling the postfix function
-template <typename TN, typename TOther>
-MultiComplex<TN> operator*(TOther value, const MultiComplex<TN>& mc) {
+template <typename TN>
+MultiComplex<TN> operator*(MultiComplex<TN> value, const MultiComplex<TN>& mc) {
     return mc * value;
 };
 /// Helper function that allows for pre-subtraction by calling the postfix function
-template <typename TN, typename TOther>
-const MultiComplex<TN> operator-(const TOther value, const MultiComplex<TN>& mc) {
+template <typename TN>
+const MultiComplex<TN> operator-(const MultiComplex<TN> value, const MultiComplex<TN>& mc) {
     return -(mc - value);
 };
 /// Helper function that allows for pre-division by calling the postfix function
-template <typename TN, typename TOther>
-const MultiComplex<TN> operator/(const TOther value, const MultiComplex<TN>& mc) {
+template <typename TN>
+const MultiComplex<TN> operator/(const MultiComplex<TN> value, const MultiComplex<TN>& mc) {
     return value * mc.multinv();
 };
 
