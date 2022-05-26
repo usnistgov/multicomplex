@@ -12,7 +12,6 @@
 #include <functional>
 #include <numeric>
 #include <cmath>
-#include <type_traits>
 
 #ifdef __has_include                                           // Check if __has_include is present
 #if __has_include(<boost/multiprecision/cpp_bin_float.hpp>)  // Check for presence of boost/multiprecision
@@ -84,7 +83,12 @@ struct MultiComplex
     /// Default constructor
     MultiComplex() : m_d(0) { coef = {}; };
 
-    /// This is a "normal" real number (re+i*0), stored as a complex number
+    /// This is a "normal" floating point number (re+i*0), stored as a complex number
+    /// All floating point values *other* than the numerical type used in the class are enabled as candidate types 
+    template<typename TI, typename std::enable_if<!std::is_same_v<TI, T> && std::is_arithmetic_v<TI>>::type* = nullptr>
+    MultiComplex(const TI& re) : m_d(1) { coef.resize(2); coef[0] = re, coef[1] = 0; };
+
+    /// This is a "normal" floating point number (re+i*0), stored as a complex number
     MultiComplex(const T& re) : m_d(1) { coef.resize(2); coef[0] = re, coef[1] = 0; };
 
     // This is a "normal" complex number, stored as such 
@@ -128,25 +132,32 @@ struct MultiComplex
 
     /// Unary negation parameter (-this)
     const MultiComplex operator-() const {
-        return MultiComplex(std::move(static_cast<T>(-1)*coef));
-    }
-    /// Right addition by a float (this+r)
-    const MultiComplex operator+(T r) const {
-        std::valarray<T> new_coef = coef; new_coef[0] += r;
+        decltype(coef) new_coef = -coef;
         return new_coef;
     }
-    /// Right subtraction by a float (this-r)
-    const MultiComplex operator-(T r) const {
-        std::valarray<T> new_coef = coef; new_coef[0] -= r;
+    /// Right addition by a scalar (this+r)
+    template<typename TI, typename std::enable_if<!std::is_same_v<TI, T> && std::is_arithmetic_v<TI>>::type* = nullptr>
+    const MultiComplex operator+(TI r) const {
+        decltype(coef) new_coef = coef; new_coef[0] += r;
         return new_coef;
     }
-    /// Right multiplication by a float (this*r)
-    const MultiComplex operator*(T r) const {
-        return MultiComplex<T>(coef*r);
+    /// Right subtraction by a scalar (this-r)
+    template<typename TI, typename std::enable_if<!std::is_same_v<TI, T> && std::is_arithmetic_v<TI>>::type* = nullptr>
+    const MultiComplex operator-(TI r) const {
+        decltype(coef) new_coef = coef; new_coef[0] -= r;
+        return new_coef;
     }
-    /// Right division by a float (this/r)
-    const MultiComplex operator/(T r) const {
-        return MultiComplex<T>(coef/r);
+    /// Right multiplication by a scalar (this*r)
+    template<typename TI, typename std::enable_if<!std::is_same_v<TI, T> && std::is_arithmetic_v<TI>>::type* = nullptr>
+    const MultiComplex operator*(TI r) const {
+        decltype(coef) new_coef = coef*r;
+        return new_coef;
+    }
+    /// Right division by a scalar (this/r)
+    template<typename TI, typename std::enable_if<!std::is_same_v<TI, T> && std::is_arithmetic_v<TI>>::type* = nullptr>
+    const MultiComplex operator/(TI r) const {
+        decltype(coef) new_coef = coef/r;
+        return new_coef;
     }
     /// Right addition by another MultiComplex
     const MultiComplex operator+(const MultiComplex& w) const {
@@ -528,24 +539,6 @@ struct MultiComplex
         return lhs.real() < rhs.real(); 
     };
 };
-
-// Specializations of the common_type template to allow for use in std::common_type_t
-namespace std {
-  template<typename T>
-  struct common_type<double, mcx::MultiComplex<T>> {
-    using type = mcx::MultiComplex<T>;
-  };
-
-  template<typename T>
-  struct common_type<int, mcx::MultiComplex<T>> {
-    using type = mcx::MultiComplex<T>;
-  };
-
-  template<typename T, typename T2>
-  struct common_type<std::complex<T2>, mcx::MultiComplex<T>> {
-    using type = mcx::MultiComplex<T>;
-  };
-} 
 
 // A type trait to define acceptable numerical types in the prefix operator functions
 template<typename T> struct is_acceptable_number : public std::false_type {};
