@@ -528,33 +528,38 @@ struct MultiComplex
     };
 };
 
+// A type trait to define acceptable numerical types in the prefix operator functions
+template<typename T> struct is_acceptable_number : public std::false_type {};
+template<> struct is_acceptable_number<int> : public std::true_type {};
+template<> struct is_acceptable_number<double> : public std::true_type {};
+template<> struct is_acceptable_number<std::complex<double>> : public std::true_type {};
+
+#if defined(BOOST_MULTIPRECISION_FOUND)
+template<typename T> struct is_acceptable_number<boost::multiprecision::number<T>> : public std::true_type {};
+#endif
+
 /// See https://stackoverflow.com/a/14294277/1360263 for description of type limiting
 /// Helper function that allows for pre-addition by calling the postfix function for numerical types
 template <
-    typename TN, typename T,
-    typename = typename std::enable_if<std::is_arithmetic<T>::value, T>::type
->
+    typename TN, typename T, typename = typename std::enable_if<is_acceptable_number<T>::value, T>::type>
 MultiComplex<TN> operator+(T value, const MultiComplex<TN>& mc) {
     return mc + value;
 };
 /// Helper function that allows for pre-multiplication by calling the postfix function for numerical types
 template <
-    typename TN, typename T,
-    typename = typename std::enable_if<std::is_arithmetic<T>::value, T>::type>
+    typename TN, typename T, typename = typename std::enable_if<is_acceptable_number<T>::value, T>::type>
 MultiComplex<TN> operator*(T value, const MultiComplex<TN>& mc) {
     return mc * value;
 };
 /// Helper function that allows for pre-subtraction by calling the postfix function for numerical types
 template <
-    typename TN, typename T,
-    typename = typename std::enable_if<std::is_arithmetic<T>::value, T>::type>
+    typename TN, typename T, typename = typename std::enable_if<is_acceptable_number<T>::value, T>::type>
 const MultiComplex<TN> operator-(const T value, const MultiComplex<TN>& mc) {
     return -(mc - value);
 };
 /// Helper function that allows for pre-division by calling the postfix function for numerical types
 template <
-    typename TN, typename T,
-    typename = typename std::enable_if<std::is_arithmetic<T>::value, T>::type>
+    typename TN, typename T,typename = typename std::enable_if<is_acceptable_number<T>::value, T>::type>
 const MultiComplex<TN> operator/(const T value, const MultiComplex<TN>& mc) {
     return value * mc.multinv();
 };
