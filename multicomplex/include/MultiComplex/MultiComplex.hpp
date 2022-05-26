@@ -13,6 +13,12 @@
 #include <numeric>
 #include <cmath>
 
+#ifdef __has_include                                           // Check if __has_include is present
+#if __has_include(<boost/multiprecision/cpp_bin_float.hpp>)  // Check for presence of boost/multiprecision
+#define  BOOST_MULTIPRECISION_FOUND
+#endif
+#endif
+
 namespace mcx {
 
 // A custom slice, more like Python, where the arguments to the slice are start, stop, increment
@@ -101,8 +107,17 @@ struct MultiComplex
         return (m_d > 0) ? coef[0] : std::numeric_limits<T>::infinity();
     }
 
-    std::complex<T> complex() const {
-        return { coef[0], coef[1] };
+    auto complex() const {
+#if defined(BOOST_MULTIPRECISION_FOUND)
+        if constexpr (boost::multiprecision::is_number<T>::value) { // Is something from boost::multiprecision
+            return cpp_complex<std::numeric_limits<T>::max_digits10>(coef[0], coef[1]);
+        }
+        else {
+            return std::complex<T>(coef[0], coef[1]);
+        }
+#else
+        return std::complex<T>(coef[0], coef[1]);
+#endif
     }
 
     /// Get a const reference to the coefficients
@@ -186,7 +201,9 @@ struct MultiComplex
     const MultiComplex operator*(const MultiComplex& w) const {
         const MultiComplex& z = *this;
         if (w.dim() == 1 && z.dim() == 1) {
-            return z.complex() * w.complex();
+            auto zw = z.complex() * w.complex();
+            std::valarray<T> coef(2); coef[0] = static_cast<T>(zw.real()); coef[1] = static_cast<T>(zw.imag());
+            return coef;
         }
         int Lz = static_cast<int>(z.get_coef().size()),
             Lw = static_cast<int>(w.get_coef().size());
@@ -315,7 +332,9 @@ struct MultiComplex
 
     MultiComplex exp() const {
         if (dim() == 1){
-            return std::exp(complex());
+            auto z = scalar_exp(complex());
+            std::valarray<T> coef(2); coef[0] = static_cast<T>(z.real()); coef[1] = static_cast<T>(z.imag());
+            return coef;
         }
         std::size_t L = coef.size(), L2 = L / 2; 
         std::valarray<T> w1 = std::valarray<T>(0.0, L), w2=std::valarray<T>(0.0, 2*L);
@@ -380,7 +399,9 @@ struct MultiComplex
 
     MultiComplex pow(int n) const {
         if (dim()==1){
-            return std::pow(complex(), n);
+            auto z = scalar_pow(complex(), n);
+            std::valarray<T> coef(2); coef[0] = static_cast<T>(z.real()); coef[1] = static_cast<T>(z.imag());
+            return coef;
         }
         int absn = std::abs(n);
         if (absn == 0) {
