@@ -61,7 +61,7 @@ template<typename T> inline auto scalar_exp(const T& x) { if constexpr (std::is_
 template<typename T> inline auto scalar_log(const T& x) { if constexpr (std::is_arithmetic_v<T>) { return ::log(x); } else { return log(x); } };
 template<typename T> inline auto scalar_abs(const T& x) { if constexpr (std::is_arithmetic_v<T>) { return ::abs(x); } else { return abs(x); } };
 template<typename TN>
-TN scalar_pow(TN& x, int e) {
+TN scalar_pow(const TN& x, int e) {
     if constexpr (std::is_floating_point<TN>::value) {
         // base is a number (float, double, long double)
         return std::pow(x, e);
