@@ -112,7 +112,7 @@ struct MultiComplex
     auto complex() const {
 #if defined(BOOST_MULTIPRECISION_FOUND)
         if constexpr (boost::multiprecision::is_number<T>::value) { // Is something from boost::multiprecision
-            return cpp_complex<std::numeric_limits<T>::max_digits10>(coef[0], coef[1]);
+            return boost::multiprecision::cpp_complex<std::numeric_limits<T>::max_digits10>(coef[0], coef[1]);
         }
         else {
             return std::complex<T>(coef[0], coef[1]);
