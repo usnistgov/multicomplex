@@ -46,13 +46,13 @@ void init_MultiComplex(py::module &m){
         .def(double() * py::self)
         // Inplace operators
         .def(py::self += double())
-//        .def(double() +  py::self)
+        .def(py::self += py::self)
         .def(py::self -= double())
-//        .def(double() - py::self)
+        .def(py::self -= py::self)
         .def(py::self /= double())
-//        .def(double() / py::self)
+        .def(py::self /= py::self)
         .def(py::self *= double())
-//        .def(double() * py::self)
+        .def(py::self *= py::self)
         
         // Unary operators
         .def(-py::self)

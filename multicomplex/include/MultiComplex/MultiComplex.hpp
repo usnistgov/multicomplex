@@ -152,6 +152,11 @@ struct MultiComplex
         coef[0] += r;
         return *this;
     }
+    auto& operator+=(const MultiComplex& w) {
+        auto n = *this + w;
+        std::swap(*this, n);
+        return *this;
+    }
     /// Right subtraction by a scalar (this-r)
     template<typename TI, typename std::enable_if<!std::is_same_v<TI, T> && std::is_arithmetic_v<TI>>::type* = nullptr>
     const MultiComplex operator-(TI r) const {
@@ -167,6 +172,11 @@ struct MultiComplex
     /// Inplace subtraction of a scalar (this -= r)
     auto& operator-=(const T& r) {
         coef[0] -= r;
+        return *this;
+    }
+    auto& operator-=(const MultiComplex& w) {
+        auto n = *this - w;
+        std::swap(*this, n);
         return *this;
     }
     /// Right multiplication by a scalar (this*r)
@@ -186,6 +196,11 @@ struct MultiComplex
         coef *= r;
         return *this;
     }
+    auto& operator*=(const MultiComplex& w) {
+        auto n = *this * w;
+        std::swap(*this, n);
+        return *this;
+    }
     /// Right division by a scalar (this/r)
     template<typename TI, typename std::enable_if<!std::is_same_v<TI, T> && std::is_arithmetic_v<TI>>::type* = nullptr>
     const MultiComplex operator/(TI r) const {
@@ -201,6 +216,11 @@ struct MultiComplex
     /// Inplace division by a scalar (this /= r)
     auto& operator/=(const T& r) {
         coef /= r;
+        return *this;
+    }
+    auto& operator/=(const MultiComplex& w) {
+        auto n = *this / w;
+        std::swap(*this, n);
         return *this;
     }
     /// Right addition by another MultiComplex
