@@ -141,11 +141,33 @@ struct MultiComplex
         decltype(coef) new_coef = coef; new_coef[0] += r;
         return new_coef;
     }
+    /// Inplace addition of a scalar (this += r)
+    template<typename TI, typename std::enable_if<!std::is_same_v<TI, T> && std::is_arithmetic_v<TI>>::type* = nullptr>
+    auto& operator+=(const TI& r) {
+        coef[0] += r;
+        return *this;
+    }
+    /// Inplace addition of a scalar (this += r)
+    auto& operator+=(const T& r) {
+        coef[0] += r;
+        return *this;
+    }
     /// Right subtraction by a scalar (this-r)
     template<typename TI, typename std::enable_if<!std::is_same_v<TI, T> && std::is_arithmetic_v<TI>>::type* = nullptr>
     const MultiComplex operator-(TI r) const {
         decltype(coef) new_coef = coef; new_coef[0] -= r;
         return new_coef;
+    }
+    /// Inplace subtraction of a scalar (this -= r)
+    template<typename TI, typename std::enable_if<!std::is_same_v<TI, T> && std::is_arithmetic_v<TI>>::type* = nullptr>
+    auto& operator-=(const TI& r) {
+        coef[0] -= r;
+        return *this;
+    }
+    /// Inplace subtraction of a scalar (this -= r)
+    auto& operator-=(const T& r) {
+        coef[0] -= r;
+        return *this;
     }
     /// Right multiplication by a scalar (this*r)
     template<typename TI, typename std::enable_if<!std::is_same_v<TI, T> && std::is_arithmetic_v<TI>>::type* = nullptr>
@@ -153,11 +175,33 @@ struct MultiComplex
         decltype(coef) new_coef = coef*r;
         return new_coef;
     }
+    /// Inplace multiplication by a scalar (this *= r)
+    template<typename TI, typename std::enable_if<!std::is_same_v<TI, T> && std::is_arithmetic_v<TI>>::type* = nullptr>
+    auto& operator*=(const TI& r) {
+        coef *= r;
+        return *this;
+    }
+    /// Inplace multiplication by a scalar (this *= r)
+    auto& operator*=(const T& r) {
+        coef *= r;
+        return *this;
+    }
     /// Right division by a scalar (this/r)
     template<typename TI, typename std::enable_if<!std::is_same_v<TI, T> && std::is_arithmetic_v<TI>>::type* = nullptr>
     const MultiComplex operator/(TI r) const {
         decltype(coef) new_coef = coef/r;
         return new_coef;
+    }
+    /// Inplace division by a scalar (this /= r)
+    template<typename TI, typename std::enable_if<!std::is_same_v<TI, T> && std::is_arithmetic_v<TI>>::type* = nullptr>
+    auto& operator/=(const TI& r) {
+        coef /= r;
+        return *this;
+    }
+    /// Inplace division by a scalar (this /= r)
+    auto& operator/=(const T& r) {
+        coef /= r;
+        return *this;
     }
     /// Right addition by another MultiComplex
     const MultiComplex operator+(const MultiComplex& w) const {

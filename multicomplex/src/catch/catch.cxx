@@ -44,6 +44,16 @@ TEST_CASE("real(MCX)", "[1D]") {
     REQUIRE(z.real() == 3.0);
 }
 
+TEST_CASE("inplace operations", "[1D]") {
+    mcx::MultiComplex<double> z{ std::complex<double>{3.0, 1e-100} };
+    z += 3.7;
+    z -= 3.7;
+    z *= 1.8;
+    z /= 1.8;
+    REQUIRE(z.real() == 3.0);
+}
+
+
 TEST_CASE("MCX < double", "[1D]") {
     mcx::MultiComplex<double> z{ std::complex<double>{3.0, 1e-100} };
     REQUIRE(z < 4.0);
