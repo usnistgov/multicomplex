@@ -2,5 +2,7 @@
 /multicomplex/__init__.py
 /bld
 /multicomplex/boost_multiprecision
-
+build
 multicomplex/interface/version.hpp
+*.egg-info
+/**/.DS_Store
