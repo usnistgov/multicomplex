@@ -690,6 +690,11 @@ MultiComplex<TN> pow(const MultiComplex<TN>& z, int e) {
     return z.pow(e);
 }
 
+template<typename TN>
+MultiComplex<TN> sqrt(const MultiComplex<TN>& z) {
+    return z.pow(0.5);
+}
+
 /**
  The derivatives of order 1 to n (inclusive) of a function that takes a single variable
 

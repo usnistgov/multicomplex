@@ -83,6 +83,7 @@ void init_MultiComplex(py::module &m){
         .def("cosh", [](MCD& mc) { return cosh(mc); })
         .def("exp", [](MCD& mc) { return exp(mc); })
         .def("log", [](MCD& mc) { return log(mc); })
+        .def("sqrt", [](MCD& mc) { return sqrt(mc); })
         ;
 }
 
