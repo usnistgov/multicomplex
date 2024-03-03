@@ -44,6 +44,15 @@ add_executable(catchtests "${CMAKE_CURRENT_SOURCE_DIR}/src/catch/catch.cxx")
 attach_includes(catchtests)
 add_test(catch catchtests)
 
+if(MSVC)
+    target_compile_options(catchtests PRIVATE /W4 ) # or add /WX to turn warnings into errors
+    target_compile_options(catchtests PUBLIC /wc5054)
+  else()
+    # Turn on all warnings, and then disable selectively
+    target_compile_options(catchtests PRIVATE -Wall -Wextra -Wpedantic  -Wno-deprecated-copy -Wno-language-extension-token) # or add -Werror to turn warnings into errors
+    target_compile_options(catchtests PUBLIC -Wno-deprecated-anon-enum-enum-conversion)
+  endif()
+
 if (NOT MULTICOMPLEX_NO_PYTHON)
   # Build pybind11 python module
   pybind11_add_module(multicomplex "${CMAKE_CURRENT_SOURCE_DIR}/interface/pybind11_wrapper.cpp")

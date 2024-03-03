@@ -416,7 +416,7 @@ struct MultiComplex
             std::valarray<T> coef(2); coef[0] = static_cast<T>(z.real()); coef[1] = static_cast<T>(z.imag());
             return coef;
         }
-        std::size_t L = coef.size(), L2 = L / 2; 
+        std::size_t L = coef.size(); 
         std::valarray<T> w1 = std::valarray<T>(0.0, L), w2=std::valarray<T>(0.0, 2*L);
         _exp(coef, 0, w1, 0, w2, 0, L);
         return w1;
@@ -829,12 +829,11 @@ typename PointType::value_type diff_mcxN(
     TN DELTA = increment(numderiv);
     
     // Get the type of the container of arguments to function, to allow for std::vector, std::array, etc.
-    constexpr std::size_t zero = 0;
     using MCVecType = typename function_traits<FuncType>::argtype;
     MCVecType zs(x.size());
 
     int k_counter = 0;
-    for (auto i = 0; i < x.size(); ++i){
+    for (auto i = 0U; i < x.size(); ++i){
         // Coeffs of the multicomplex number, filled by default
         // with zeros.  The array of coefficients is of length 2^(numderiv)
         std::valarray<TN> c(0.0, exp2i(numderiv));
@@ -875,7 +874,7 @@ namespace detail{
     // Partial specialization for valarray "matrix"
     template <> inline void resizemat<std::valarray<std::valarray<double>>, std::size_t>(std::valarray<std::valarray<double>>& m, std::size_t M, std::size_t N) {
         m.resize(M);
-        for (auto i = 0; i < M; ++i){
+        for (auto i = 0U; i < M; ++i){
             m[i] = std::valarray<double>(0.0, N);
         }
     }

@@ -250,7 +250,7 @@ TEST_CASE("Hessian", "[ND]") {
     fcn_t func = [](const std::valarray<mcx::MultiComplex<double>>& zs) -> mcx::MultiComplex<double> {
         return cos(zs[0]) * sin(zs[1]);
     };
-    double x =0.1234, y=20.1234, z=-4.1234;
+    double x =0.1234, y=20.1234;
     std::valarray<std::valarray<double>> Hessianexact = {{-sin(y) * cos(x), -sin(x) * cos(y)}, {-sin(x) * cos(y), -sin(y) * cos(x)}};
     
     SECTION("Hessian multiple") {
@@ -261,6 +261,5 @@ TEST_CASE("Hessian", "[ND]") {
         for (auto i = 0; i < 2; ++i) {
             CHECK(std::abs((H[i]-Hessianexact[i]).max()) < 1e-14);
         }
-        int rr =0;
     }
 }
